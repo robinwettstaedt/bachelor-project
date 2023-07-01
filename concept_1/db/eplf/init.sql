@@ -6,5 +6,7 @@ CREATE TABLE Payments (
 
 
 CREATE TABLE Log (
-    id SERIAL PRIMARY KEY
+    id SERIAL PRIMARY KEY,
+    payment_id INTEGER,
+    FOREIGN KEY (payment_id) REFERENCES Payments(id)
 );
