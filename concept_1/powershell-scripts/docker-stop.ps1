@@ -5,7 +5,7 @@ docker rm eplf
 docker stop zd
 docker rm zd
 
-docker stop rabbit-mq
-docker rm rabbit-mq
+docker stop mq
+docker rm mq
 
-docker network rm container-net
+docker network rm containernetwork

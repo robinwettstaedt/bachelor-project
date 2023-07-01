@@ -7,8 +7,11 @@ def callback(ch, method, properties, body):
 
 
 def main():
+    # provide username and pw
+    credentials = pika.PlainCredentials('rabbit', 'rabbit')
+
     # Here we're creating the connection to RabbitMQ.
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.18.0.10'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.0.22', credentials=credentials))
     channel = connection.channel()
 
     # Here we declare the queue from which we want to receive messages.
@@ -20,7 +23,7 @@ def main():
     channel.basic_consume(queue='my_queue', on_message_callback=callback, auto_ack=True)
 
     print('Waiting for messages. To exit press CTRL+C')
-    
+
     try:
         # Here we start the consumer in an infinite loop.
         channel.start_consuming()

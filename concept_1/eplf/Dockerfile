@@ -5,13 +5,13 @@ FROM python:3.9-slim-buster
 WORKDIR /app
 
 # Add requirements.txt to the image
-ADD requirements.txt /app
+COPY ./concept_1/eplf/requirements.txt /app
 
 # Install the Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Add the rest of the code to the image
-ADD . /app
+# Add script to the image
+COPY ./concept_1/eplf/run.py /app
 
 # Set the command to be run when starting a container from this image
 CMD [ "python", "./run.py" ]

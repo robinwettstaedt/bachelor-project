@@ -1,5 +1,5 @@
 # Use the official RabbitMQ image from the Docker Hub
-FROM rabbitmq:3.9-management
+FROM rabbitmq:3.12-management
 
 # Enable RabbitMQ plugins (here the management plugin is enabled)
 RUN rabbitmq-plugins enable --offline rabbitmq_management
