@@ -1,5 +1,6 @@
 import json
 import time
+import random
 import pika
 import psycopg2
 
@@ -21,9 +22,13 @@ def connect_to_db(host, dbname, user, password, port=5432):
 
 
 def get_data_from_db(conn):
-    # This function retrieves all rows from the 'Payments' table in the database
+    # This function retrieves a random number of rows (between 1000 and 10000) from the 'Payments' table in the database
+    # that have not already been retrieved previously (and are therefore not in the 'Log' table)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Payments")
+    num_rows_to_retrieve = random.randint(1000, 10000)
+    cursor.execute(f"""SELECT * FROM Payments
+                       WHERE id NOT IN (SELECT payment_id FROM Log)
+                       LIMIT {num_rows_to_retrieve}""")
     return cursor.fetchall()
 
 
@@ -66,8 +71,8 @@ def main():
         # Write the IDs of the data that was published into the 'Log' table in the database.
         write_data_to_db(conn, data)
 
-        # Wait 10 seconds before sending the next message.
-        time.sleep(10)
+        # Wait 10 minutes before sending the next message.
+        time.sleep(600)
 
 
 if __name__ == '__main__':
