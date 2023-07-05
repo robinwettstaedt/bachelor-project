@@ -10,8 +10,11 @@ COPY ./concept_1/eplf/requirements.txt /app
 # Install the Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Add script to the image
-COPY ./concept_1/eplf/run.py /app
+# Add scripts to the image
+COPY ./concept_1/eplf/run.sh /app
+COPY ./concept_1/eplf/listen.py /app
+COPY ./concept_1/eplf/publish.py /app
 
 # Set the command to be run when starting a container from this image
-CMD [ "python", "./run.py" ]
+# CMD ["bash", "run.sh"]
+CMD [ "python", "-u", "./publish.py" ]

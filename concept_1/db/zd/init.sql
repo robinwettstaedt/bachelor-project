@@ -1,5 +1,7 @@
-CREATE TABLE Users (
-    ID INT PRIMARY KEY,
-    Name VARCHAR(50),
-    Email VARCHAR(50)
+CREATE TABLE Payments (
+    id SERIAL PRIMARY KEY,
+    amount MONEY NOT NULL,
+    payment_date DATE NOT NULL
 );
+
+ 

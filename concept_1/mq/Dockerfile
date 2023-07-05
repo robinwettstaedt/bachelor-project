@@ -7,6 +7,7 @@ RUN rabbitmq-plugins enable --offline rabbitmq_management
 # Set the environment variables (Replace 'your_user' and 'your_password' with your desired user and password)
 ENV RABBITMQ_DEFAULT_USER=rabbit
 ENV RABBITMQ_DEFAULT_PASS=rabbit
+ENV RABBITMQ_HEARTBEAT=0
 
 # Expose ports
 # 5672: used by AMQP 0-9-1 and 1.0 clients without and with TLS

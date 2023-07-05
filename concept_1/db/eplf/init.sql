@@ -8,5 +8,7 @@ CREATE TABLE Payments (
 CREATE TABLE Log (
     id SERIAL PRIMARY KEY,
     payment_id INTEGER,
+    validated BOOLEAN,
+    inserted TIMESTAMP,
     FOREIGN KEY (payment_id) REFERENCES Payments(id)
 );

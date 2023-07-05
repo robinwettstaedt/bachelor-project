@@ -11,7 +11,9 @@ COPY ./concept_1/zd/requirements.txt /app
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Add script to the image
-COPY ./concept_1/zd/run.py /app
+COPY ./concept_1/zd/listen.py /app
+# COPY ./concept_1/zd/publish.py /app
+# COPY ./concept_1/zd/run.sh /app
 
 # Set the command to be run when starting a container from this image
-CMD [ "python", "./run.py" ]
+CMD [ "python", "-u", "./listen.py" ]
