@@ -1,12 +1,12 @@
 # Stop all containers and remove them, as well as the docker network
-docker stop eplf
-docker rm eplf
+docker stop eplf-publish
+docker rm eplf-publish
 
-# docker stop eplf2
-# docker rm eplf
+docker stop eplf-republish
+docker rm eplf-republish
 
-# docker stop eplf3
-# docker rm eplf3
+docker stop eplf-listen
+docker rm eplf-listen
 
 
 docker stop eplf-db
@@ -25,8 +25,8 @@ docker rm zd
 docker stop zd2
 docker rm zd2
 
-# docker stop zd3
-# docker rm zd3
+docker stop zd3
+docker rm zd3
 
 
 docker stop zd-db

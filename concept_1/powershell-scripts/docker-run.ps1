@@ -20,12 +20,12 @@ Start-Sleep -Seconds 10
 docker run --network=containernetwork --name fill -d -p 4000:3000 fill:latest
 
 # wait for the database to be filled
-Start-Sleep -Seconds 20
+Start-Sleep -Seconds 240
 
 # Start the EPLF applications
-docker run --network=containernetwork --name eplf -d -p 3001:3000 eplf:latest
-# docker run --network=containernetwork --name eplf2 -d -p 3002:3000 eplf:latest
-# docker run --network=containernetwork --name eplf3 -d -p 3003:3000 eplf:latest
+docker run --network=containernetwork --name eplf-publish -d -p 3001:3000 eplf-publish:latest
+docker run --network=containernetwork --name eplf-listen -d -p 3003:3000 eplf-listen:latest
+docker run --network=containernetwork --name eplf-republish -d -p 3002:3000 eplf-republish:latest
 
 
 
@@ -38,4 +38,4 @@ Start-Sleep -Seconds 10
 # Start the ZD applications
 docker run --network=containernetwork --name zd -d -p 3005:3000 zd:latest
 docker run --network=containernetwork --name zd2 -d -p 3006:3000 zd:latest
-# docker run --network=containernetwork --name zd3 -d -p 3007:3000 zd:latest
+docker run --network=containernetwork --name zd3 -d -p 3007:3000 zd:latest

@@ -9,8 +9,10 @@ docker build --no-cache --pull --rm -f "..\db\eplf\Dockerfile" -t eplf-db:latest
 # build the elpf fill database image
 docker build --no-cache --pull --rm -f "..\db\fill\Dockerfile" -t fill:latest "..\..\"
 
-# build the eplf service image
-docker build --no-cache --pull --rm -f "..\eplf\Dockerfile" -t eplf:latest "..\..\"
+# build the eplf service images
+docker build --no-cache --pull --rm -f "..\eplf\publish\Dockerfile" -t eplf-publish:latest "..\..\"
+docker build --no-cache --pull --rm -f "..\eplf\listen\Dockerfile" -t eplf-listen:latest "..\..\"
+docker build --no-cache --pull --rm -f "..\eplf\republish\Dockerfile" -t eplf-republish:latest "..\..\"
 
 
 

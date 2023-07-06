@@ -55,7 +55,8 @@ def update_db(data, cursor):
             (payment_id,)
         )
 
-        print(f"Updated payment with id: {payment_id} to be validated.")
+
+    print(f"Updated {len(data)} records in the 'Log' table of the EPLF database to be validated. \n")
 
 
 def main():
@@ -63,7 +64,7 @@ def main():
     credentials = pika.PlainCredentials('rabbit', 'rabbit')
 
     # Here we're creating the connection to RabbitMQ.
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.0.22', credentials=credentials, heartbeat=1000))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.0.22', credentials=credentials, heartbeat=10000))
     channel = connection.channel()
 
     # Declare the queue from which we want to receive messages.

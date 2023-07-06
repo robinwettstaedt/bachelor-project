@@ -5,6 +5,8 @@ from datetime import datetime
 import pika
 import psycopg2
 import psycopg2.errors
+from schwifty import IBAN
+from schwifty.exceptions import InvalidChecksumDigits
 
 
 def connect_to_db(host, dbname, user, password, port=5432):
@@ -17,10 +19,19 @@ def connect_to_db(host, dbname, user, password, port=5432):
             password=password,
             port=port,
         )
-        print(f"Successfully connected to PostgreSQL database with id {id(conn)}")
+        print(f"\nSuccessfully connected to PostgreSQL database with id {id(conn)}")
     except Exception as e:
         print(f"Error occurred: {e}")
     return conn
+
+
+def is_iban_valid(iban):
+    # Returns True if the IBAN is valid, False otherwise
+    try:
+        iban = IBAN(iban)
+        return True
+    except InvalidChecksumDigits:
+        return False
 
 
 def insert_into_db(conn, data):
@@ -32,7 +43,7 @@ def insert_into_db(conn, data):
     # will return a value between 0.01 and 0.1 (10ms to 100ms) 95% of the time, and will return 1 (1 second) 5% of the time.
     def generate_sleep_time():
         return random.choices(
-            population=[random.uniform(0.01, 0.1), 1],  # The possible sleep times
+            population=[random.uniform(0.01, 0.05), 0.1],  # The possible sleep times
             weights=[0.95, 0.05],  # The probabilities for each sleep time
             k=1
         )[0]
@@ -41,35 +52,68 @@ def insert_into_db(conn, data):
     if isinstance(data, list):
         # Loop through each record in list
         for item in data:
+
+            # Validate the data item
+            if len(item) < 4:
+                continue
+
+            # Validate the IBAN
+            if not is_iban_valid(item[2]):
+                continue
+
             try:
                 # delay for a random duration
-                # time.sleep(generate_sleep_time())
+                time.sleep(generate_sleep_time())
+
+                # Random 0.1% chance to skip insertion (simulating an internal error)
+                if random.random() < 0.001:
+                    print("Internal error, payment was not correctly processed")
+                    continue
 
                 # Insert the record into database
-                cursor.execute("INSERT INTO Payments (id, amount, payment_date) VALUES (%s, %s, %s)", (item[0], item[1], item[2]))
+                cursor.execute("INSERT INTO Payments (id, amount, iban, payment_date) VALUES (%s, %s, %s, %s)", (item[0], item[1], item[2], item[3]))
                 conn.commit()
 
                 # Add the record to the list of successfully inserted records
                 successfully_inserted_data.append(item)
 
-                print(f"Inserted data: {item}")
             except psycopg2.errors.UniqueViolation:
                 # Duplicate entry / idempotency
                 conn.rollback()
                 print(f"Duplicate entry: {item}")
 
     else:
+        # Validate the data item
+        if len(data) < 4:
+            return successfully_inserted_data
+
+        # Validate the IBAN
+        if not is_iban_valid(data[2]):
+            return successfully_inserted_data
+
         # Insert single record into database
         try:
             # delay for a random duration
-            # time.sleep(generate_sleep_time())
+            time.sleep(generate_sleep_time())
 
-            cursor.execute("INSERT INTO Payments (id, amount, payment_date) VALUES (%s, %s, %s)", (data[0], data[1], data[2]))
+            # Random 0.1% chance to skip insertion (simulating an internal error)
+            if random.random() < 0.001:
+                print("Internal error, payment was not correctly processed")
+                return successfully_inserted_data
+
+            cursor.execute("INSERT INTO Payments (id, amount, iban, payment_date) VALUES (%s, %s, %s, %s)", (data[0], data[1], data[2], data[3]))
             conn.commit()
+
+        # Duplicate entry / idempotency
         except psycopg2.errors.UniqueViolation:
             # Ignore duplicate entry
             conn.rollback()
 
+    # Print status
+    if isinstance(data, list):
+        print(f"Successfully inserted {len(successfully_inserted_data)} out of the {len(data)} records received into the 'Payments' table of the ZD database.")
+    else:
+        print(f"Successfully inserted the only received record with id {data[0]} into the 'Payments' table of the ZD database.")
 
     return successfully_inserted_data
 
@@ -103,14 +147,14 @@ def main():
     credentials = pika.PlainCredentials('rabbit', 'rabbit')
 
     # Establish RabbitMQ connection.
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.0.22', credentials=credentials, heartbeat=1000))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.0.22', credentials=credentials, heartbeat=10000))
     channel = connection.channel()
 
     # Declare the queue.
-    channel.queue_declare(queue='data_queue')
+    channel.queue_declare(queue='data')
 
     # Set 'on_receive_message' as the callback function for received messages.
-    channel.basic_consume(queue='data_queue', on_message_callback=on_receive_message, auto_ack=False)
+    channel.basic_consume(queue='data', on_message_callback=on_receive_message, auto_ack=False)
 
     # Print status and await messages.
     print('Awaiting messages. To exit press CTRL+C')
@@ -122,6 +166,7 @@ def main():
         # Handle shutdown signal.
         channel.stop_consuming()
         connection.close()
+
 
 if __name__ == '__main__':
     main()
