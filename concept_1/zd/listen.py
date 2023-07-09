@@ -1,3 +1,18 @@
+"""
+This script listens to the 'data' queue and processes the incoming messages containing payment data.
+
+After validating the IBANs, it inserts the received data into the 'Payments' table of the ZD database.
+
+The insertion has a random delay between 10ms and 100ms to simulate a real-world scenario.
+
+There is also a 0.01% chance that the insertion is skipped to simulate a system error.
+This will result in the payment not being sent back to the EPLF-listen container for validation,
+which will trigger the EPLF-republish container to republish the payment data to the ZD once more after 20 minutes.
+
+After processing a message, the successfully inserted rows will be published to the 'validation' queue.
+"""
+
+
 import json
 import time
 import random
@@ -8,6 +23,9 @@ import psycopg2.errors
 from schwifty import IBAN
 from schwifty.exceptions import InvalidChecksumDigits
 
+
+
+# ------------- Database / data functions ------------- #
 
 def connect_to_db(host, dbname, user, password, port=5432):
     conn = None
@@ -36,6 +54,10 @@ def is_iban_valid(iban):
 
 def insert_into_db(conn, data):
     successfully_inserted_data = []
+    invalid_iban_counter = 0
+    system_error_counter = 0
+    received_invalid_data_counter = 0
+    received_duplicate_data_counter = 0
 
     # Create a database cursor
     cursor = conn.cursor()
@@ -55,10 +77,13 @@ def insert_into_db(conn, data):
 
             # Validate the data item
             if len(item) < 4:
+                print(f"Received invalid data: {item}")
+                received_invalid_data_counter += 1
                 continue
 
             # Validate the IBAN
             if not is_iban_valid(item[2]):
+                invalid_iban_counter += 1
                 continue
 
             try:
@@ -67,7 +92,7 @@ def insert_into_db(conn, data):
 
                 # Random 0.1% chance to skip insertion (simulating an internal error)
                 if random.random() < 0.001:
-                    print("Internal error, payment was not correctly processed")
+                    system_error_counter += 1
                     continue
 
                 # Insert the record into database
@@ -79,16 +104,19 @@ def insert_into_db(conn, data):
 
             except psycopg2.errors.UniqueViolation:
                 # Duplicate entry / idempotency
+                received_duplicate_data_counter += 1
                 conn.rollback()
-                print(f"Duplicate entry: {item}")
+
 
     else:
         # Validate the data item
         if len(data) < 4:
+            received_invalid_data_counter += 1
             return successfully_inserted_data
 
         # Validate the IBAN
         if not is_iban_valid(data[2]):
+            invalid_iban_counter += 1
             return successfully_inserted_data
 
         # Insert single record into database
@@ -98,7 +126,7 @@ def insert_into_db(conn, data):
 
             # Random 0.1% chance to skip insertion (simulating an internal error)
             if random.random() < 0.001:
-                print("Internal error, payment was not correctly processed")
+                system_error_counter += 1
                 return successfully_inserted_data
 
             cursor.execute("INSERT INTO Payments (id, amount, iban, payment_date) VALUES (%s, %s, %s, %s)", (data[0], data[1], data[2], data[3]))
@@ -107,16 +135,28 @@ def insert_into_db(conn, data):
         # Duplicate entry / idempotency
         except psycopg2.errors.UniqueViolation:
             # Ignore duplicate entry
+            received_duplicate_data_counter += 1
             conn.rollback()
 
     # Print status
     if isinstance(data, list):
         print(f"Successfully inserted {len(successfully_inserted_data)} out of the {len(data)} records received into the 'Payments' table of the ZD database.")
+        print(f"Invalid IBANs: {invalid_iban_counter}")
+        print(f"System errors: {system_error_counter}")
+        print(f"Invalid data: {received_invalid_data_counter}")
+        print(f"Duplicate data: {received_duplicate_data_counter}")
     else:
         print(f"Successfully inserted the only received record with id {data[0]} into the 'Payments' table of the ZD database.")
+        print(f"Invalid IBANs: {invalid_iban_counter}")
+        print(f"System errors: {system_error_counter}")
+        print(f"Invalid data: {received_invalid_data_counter}")
+        print(f"Duplicate data: {received_duplicate_data_counter}")
 
     return successfully_inserted_data
 
+
+
+# ------------- Message Queue functions ------------- #
 
 def on_receive_message(ch, method, properties, body):
     data = json.loads(body)
@@ -135,12 +175,16 @@ def on_receive_message(ch, method, properties, body):
     print(f"Message acknowledged: {method.delivery_tag}")
 
     # send the message to the queue
-    ch.basic_publish(exchange='', routing_key='validation_queue', body=message)
+    ch.basic_publish(exchange='', routing_key='validation', body=message)
     print(f"Message sent to the validation queue.")
 
     # make sure to close the connection when you're done
-    conn.close()
+    if conn:
+        conn.close()
 
+
+
+# ------------- Main function ------------- #
 
 def main():
     # Define RabbitMQ credentials.

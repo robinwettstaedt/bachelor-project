@@ -1,3 +1,17 @@
+"""
+This script is run inside the EPLF-publish container.
+
+This script retrieves a random number of rows (between 1000 and 10000) from the 'Payments' table of the EPLF database
+that have not already been retrieved previously (and are therefore not present in the 'Log' table).
+
+It then checks if the IBAN is valid and writes the data to the 'Log' table in the database.
+If the IBAN is invalid, it sets the 'faulty' column to True.
+
+It also publishes the data to the RabbitMQ 'data' queue.
+
+It runs in a loop with a 10 minute delay between each iteration.
+"""
+
 import json
 import time
 import random
@@ -6,6 +20,9 @@ import psycopg2
 from schwifty import IBAN
 from schwifty.exceptions import InvalidChecksumDigits
 
+
+
+# ------------- Database / data functions ------------- #
 
 def connect_to_db(host, dbname, user, password, port=5432):
     conn = None
@@ -48,15 +65,13 @@ def is_iban_valid(iban):
 
 def filter_data_for_invalid_iban(data):
     # This function filters the data for rows with invalid IBANs
-    # It returns a list of tuples with the payment_id and the invalid IBAN
     filtered_data = []
 
     for row in data:
-        payment_id = row[0]
         iban = row[2]
 
         if is_iban_valid(iban):
-            filtered_data.append((payment_id, iban))
+            filtered_data.append(row)
 
     return filtered_data
 
@@ -92,6 +107,8 @@ def write_data_to_db(conn, data):
     print(f"Successfully added {len(data)} rows to the Log table of which {fault_count} had invalid IBANs")
 
 
+
+# ------------- Main function ------------- #
 
 def main():
     # Connect to database.

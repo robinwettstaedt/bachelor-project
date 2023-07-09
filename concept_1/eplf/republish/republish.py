@@ -1,9 +1,25 @@
+"""
+This script is run inside the EPLF-republish container.
+
+It retrieves all the unvalidated rows from the 'Log' table of the EPLF database,
+filters out the rows that have been inserted less than 20 minutes ago,
+as well as the ones that are faulty (previously found to have invalid IBANs).
+
+It then publishes the filtered data to the RabbitMQ 'data' queue to be consumed by the ZD once more.
+
+It runs in a loop with a 10 minute delay between each iteration.
+"""
+
+
 import json
 import time
 import datetime
 import pika
 import psycopg2
 
+
+
+# ------------- Database / data functions ------------- #
 
 def connect_to_db(host, dbname, user, password, port=5432):
     conn = None
@@ -47,7 +63,7 @@ def filter_log_data(data) -> list:
         # calculate the time difference between now and the time the row was inserted
         time_diff = (datetime.datetime.utcnow() - inserted).total_seconds()
 
-        # if the time difference is greater than 2 minutes,  add the row to the filtered data
+        # if the time difference is greater than 20 minutes, add the row to the filtered data
         if time_diff > 1200:
             filtered_data.append((payment_id, iban, validated, inserted))
 
@@ -73,6 +89,9 @@ def get_data_from_payments(conn, log_data):
 
     return cursor.fetchall()
 
+
+
+# ------------- Main function ------------- #
 
 def main():
     # Connect to database.

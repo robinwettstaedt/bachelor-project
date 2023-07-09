@@ -1,5 +1,11 @@
-"""This script is run inside the EPLFc container. It listens for messages on the 'validation_queue' queue and iterates through the data it receives through said queue.
-For each record in the message, it updates the corresponding entry in the 'Log' table to have the 'validated' field set to True."""
+"""
+This script is run inside the EPLF-listen container.
+
+It listens for messages on the 'validation' queue and iterates through the data it receives through said queue.
+
+For each record in the message, it updates the corresponding entry in the 'Log' table to have the 'validated' field set to True.
+"""
+
 
 import json
 from datetime import datetime
@@ -7,25 +13,8 @@ import pika
 import psycopg2
 
 
-def callback(ch, method, properties, body):
-    # Decode the JSON string back into a Python list
-    data = json.loads(body)
 
-    # Connect to the database
-    conn = connect_to_db(host='192.168.0.23', dbname='db', user='postgres', password='postgres')
-
-    # Create a cursor from the connection
-    cursor = conn.cursor()
-
-    # Update the Log table in the database
-    update_db(data, cursor)
-
-    # Commit the changes
-    conn.commit()
-
-    # Close the connection
-    conn.close()
-
+# ------------- Database / data functions ------------- #
 
 def connect_to_db(host, dbname, user, password, port=5432):
     conn = None
@@ -59,6 +48,32 @@ def update_db(data, cursor):
     print(f"Updated {len(data)} records in the 'Log' table of the EPLF database to be validated. \n")
 
 
+
+# ------------- Message Queue functions ------------- #
+
+def callback(ch, method, properties, body):
+    # Decode the JSON string back into a Python list
+    data = json.loads(body)
+
+    # Connect to the database
+    conn = connect_to_db(host='192.168.0.23', dbname='db', user='postgres', password='postgres')
+
+    # Create a cursor from the connection
+    cursor = conn.cursor()
+
+    # Update the Log table in the database
+    update_db(data, cursor)
+
+    # Commit the changes
+    conn.commit()
+
+    # Close the connection
+    conn.close()
+
+
+
+# ------------- Main function ------------- #
+
 def main():
     # Provide username and pw for mq.
     credentials = pika.PlainCredentials('rabbit', 'rabbit')
@@ -68,11 +83,11 @@ def main():
     channel = connection.channel()
 
     # Declare the queue from which we want to receive messages.
-    channel.queue_declare(queue='validation_queue')
+    channel.queue_declare(queue='validation')
 
     # Here we tell RabbitMQ that we want to call the 'callback' function defined above
-    # when a message is received on 'validation_queue'.
-    channel.basic_consume(queue='validation_queue', on_message_callback=callback, auto_ack=False)
+    # when a message is received on 'validation'.
+    channel.basic_consume(queue='validation', on_message_callback=callback, auto_ack=False)
 
     print('Waiting for messages. To exit press CTRL+C')
 

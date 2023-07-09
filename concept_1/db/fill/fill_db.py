@@ -1,3 +1,9 @@
+"""
+This script will fill the 'Payments' table of the EPLF database with 500,000 rows of randomly generated payment data.
+
+It has a 0.2% chance of generating an entry with an invalid IBAN.
+"""
+
 import random
 import datetime
 from faker import Faker
@@ -23,7 +29,7 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 # This script assumes that the Payments table schema is (id serial primary key, amount money, iban text, payment_date date)
-for i in range(1000000):  # Generate 1,000,000 rows
+for i in range(500000):  # Generate 500,000 rows
     amount = round(random.uniform(1, 1000), 2)  # Random amount between 1 and 1000 with 2 decimal places
     payment_date = fake.date_between(start_date='-1y', end_date='today')  # Random date within last year
 
