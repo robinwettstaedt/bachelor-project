@@ -200,7 +200,7 @@ def main():
     # Set 'on_receive_message' as the callback function for received messages
     channel.basic_consume(queue='data', on_message_callback=on_receive_message, auto_ack=False)
 
-    # Print status 
+    # Print status
     print('Awaiting messages. To exit press CTRL+C')
 
     try:

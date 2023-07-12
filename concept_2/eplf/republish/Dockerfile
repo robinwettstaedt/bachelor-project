@@ -11,8 +11,8 @@ COPY ./concept_1/eplf/requirements.txt /app
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Add scripts to the image
-COPY ./concept_1/eplf/listen/listen.py /app
+COPY ./concept_1/eplf/republish/republish.py /app
 
 # Set the command to be run when starting a container from this image
 # CMD ["bash", "run.sh"]
-CMD [ "python", "-u", "./listen.py" ]
+CMD [ "python", "-u", "./republish.py" ]

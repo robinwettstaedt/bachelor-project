@@ -5,14 +5,15 @@ FROM python:3.9-slim-buster
 WORKDIR /app
 
 # Add requirements.txt to the image
-COPY ./concept_1/eplf/requirements.txt /app
+COPY ./concept_1/zd/requirements.txt /app
 
 # Install the Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Add scripts to the image
-COPY ./concept_1/eplf/listen/listen.py /app
+# Add script to the image
+COPY ./concept_1/zd/listen.py /app
+# COPY ./concept_1/zd/publish.py /app
+# COPY ./concept_1/zd/run.sh /app
 
 # Set the command to be run when starting a container from this image
-# CMD ["bash", "run.sh"]
 CMD [ "python", "-u", "./listen.py" ]
