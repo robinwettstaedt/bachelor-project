@@ -6,9 +6,6 @@ docker rm eplf-publish
 docker stop eplf-republish
 docker rm eplf-republish
 
-docker stop eplf-listen
-docker rm eplf-listen
-
 docker stop eplf-validation
 docker rm eplf-validation
 
@@ -34,6 +31,16 @@ docker rm zd-validation
 
 docker stop zd-db
 docker rm zd-db
+
+
+# ------------- Stop and remove the validator containers  ------------- #
+
+docker stop validator-listen
+docker rm validator-listen
+
+docker stop validator-publish
+docker rm validator-publish
+
 
 
 # ------------- Stop and remove the Message Queue containers  ------------- #

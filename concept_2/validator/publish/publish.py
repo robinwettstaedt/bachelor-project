@@ -36,10 +36,10 @@ def main():
         message = ""
 
         # Publish the message to the eplf-validation queue.
-        eplf_channel.basic_publish(exchange='', routing_key='data', body=message)
+        eplf_channel.basic_publish(exchange='', routing_key='eplf-validationt', body=message)
 
         # Publish the message to the zd-validation queue.
-        zd_channel.basic_publish(exchange='', routing_key='data', body=message)
+        zd_channel.basic_publish(exchange='', routing_key='zd-validation', body=message)
 
         # Increment the counter.
         sent_counter += 1

@@ -37,7 +37,7 @@ def connect_to_db(host, dbname, user, password, port=5432):
             password=password,
             port=port,
         )
-        print(f"\nSuccessfully connected to PostgreSQL database with id {id(conn)}")
+        print(f"Successfully connected to PostgreSQL database with id {id(conn)}")
     except Exception as e:
         print(f"Error occurred: {e}")
     return conn
