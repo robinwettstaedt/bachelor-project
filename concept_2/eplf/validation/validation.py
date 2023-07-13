@@ -44,7 +44,7 @@ def get_data_from_log(conn):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT *
+        SELECT id, payment_id, validated, iban, faulty
         FROM Log
         WHERE validated = false
         AND faulty = false
@@ -53,8 +53,9 @@ def get_data_from_log(conn):
     return cursor.fetchall()
 
 
+
 def update_log(conn, data):
-    # update the corresponding rows in the 'Log' table of the eplf database to be validated
+    # update the corresponding rows in the 'Log' table of the EPLF database to be validated
     cursor = conn.cursor()
 
     # Iterate over the data
@@ -76,36 +77,45 @@ def update_log(conn, data):
 # ------------- Message Queue functions ------------- #
 
 def on_receive_message(ch, method, properties, body):
-    # whenever a message is received on the eplf-validation queue, retrieve the unvalidated rows from the 'Log' table
-    # and send them back to the validator via the message queue
-
     # Connect to the DB
     conn = connect_to_db(host='192.168.0.23', dbname='db', user='postgres', password='postgres')
 
-    # Decode the JSON string back into a Python list
-    data = json.loads(body)
+    data = None
+
+    try:
+        # Decode the JSON string back into a Python list
+        data = json.loads(body)
+    except json.JSONDecodeError:
+        print(f"Received empty message. Starting to retrieve data from the 'Log' table of the EPLF database.")
 
     # if there is data in the body, the message comes back from the listen.py script of the validator
     # and is supposed to trigger the updating of the 'Log' table
-    if data:
+    if data and len(data) > 0:
         update_log(conn, data)
-
-    # if there is no data, the message comes from the publish.py script of the validator
-    # and is supposed to trigger the sending of data
-    else:
-        # retrieve the data from the 'Log' table
-        log_data = get_data_from_log(conn)
-
-        # Convert the successfully inserted data to a JSON string
-        message = json.dumps(log_data)
 
         # Acknowledge message so it can be removed from the queue
         ch.basic_ack(delivery_tag=method.delivery_tag)
         print(f"Message acknowledged: {method.delivery_tag}")
 
-        # Send the message to the queue
-        ch.basic_publish(exchange='', routing_key='eplf-validation', body=message)
-        print(f"{len(log_data)} unvalidated rows sent back to the validator service via the eplf-validation queue. \n")
+    else:
+        # retrieve the data from the 'Log' table
+        log_data = get_data_from_log(conn)
+
+        if len(log_data) > 0:
+
+            # Convert the successfully inserted data to a JSON string
+            message = json.dumps(log_data)
+
+            # Acknowledge message so it can be removed from the queue
+            ch.basic_ack(delivery_tag=method.delivery_tag)
+            print(f"Message acknowledged: {method.delivery_tag}")
+
+            # Send the message to the queue
+            ch.basic_publish(exchange='', routing_key='eplf-to-validator', body=message)
+            print(f"{len(log_data)} unvalidated rows sent back to the validator service via the eplf-to-validator queue. \n")
+
+        else:
+            print(f"No unvalidated rows found in the 'Log' table of the EPLF database. \n")
 
     # Close the database connection when done
     if conn:

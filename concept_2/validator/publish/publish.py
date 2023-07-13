@@ -36,7 +36,7 @@ def main():
         message = ""
 
         # Publish the message to the eplf-validation queue.
-        eplf_channel.basic_publish(exchange='', routing_key='eplf-validationt', body=message)
+        eplf_channel.basic_publish(exchange='', routing_key='eplf-validation', body=message)
 
         # Publish the message to the zd-validation queue.
         zd_channel.basic_publish(exchange='', routing_key='zd-validation', body=message)
@@ -47,8 +47,8 @@ def main():
         print(f"Sent message to both EPLF and ZD.")
         print(f"This is iteration number: {sent_counter}.\n")
 
-        # Wait 10 minutes before sending the next message.
-        time.sleep(600)
+        # Wait 5 minutes before sending the next message.
+        time.sleep(300)
 
 
 if __name__ == '__main__':

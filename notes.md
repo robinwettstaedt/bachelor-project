@@ -13,9 +13,10 @@ the new validation mechanism
 ### Doing right now
 
 - concept2:
-	- zd listen anpassen (log insert) (check)
-	- eplf / zd validation listen (check)
-	- validation listen (check)
+	- validation in zd/eplf: die schicken sich ihre eigenen Daten...
+		- weiterer Channel benoetigt
+
+		ist fixed, muss getestet werden
 
 
 

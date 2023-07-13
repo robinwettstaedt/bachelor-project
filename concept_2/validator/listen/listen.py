@@ -26,14 +26,35 @@ successful_matches = []
 
 def on_receive_eplf_message(ch, method, properties, body):
     # whenever a message is received on the eplf-validation queue, store it in the eplf_data list
-    data = json.loads(body)
-    eplf_data.append(data)
+
+    data = None
+
+    try:
+        # Decode the JSON string back into a Python list
+        data = json.loads(body)
+    except json.JSONDecodeError:
+        print(f"Received empty message from the EPLF. \n")
+
+    if data:
+        eplf_data.append(data)
+
+        print(f"Received {len(data)} rows from the EPLF. \n")
 
 
 def on_receive_zd_message(ch, method, properties, body):
     # whenever a message is received on the zd-validation queue, store it in the zd_data list
-    data = json.loads(body)
-    zd_data.append(data)
+    data = None
+
+    try:
+        # Decode the JSON string back into a Python list
+        data = json.loads(body)
+    except json.JSONDecodeError:
+        print(f"Received empty message from the ZD. \n")
+
+    if data:
+        zd_data.append(data)
+
+        print(f"Received {len(data)} rows from the ZD. \n")
 
 
 def compare_data():
@@ -63,6 +84,8 @@ def send_eplf_matches(channel, matches):
     # Publish the matches to the EPLF queue
     channel.basic_publish(exchange='', routing_key='eplf-validation', body=matches_json)
 
+    print(f"Sent {len(matches)} rows to be validated back to the EPLF via the eplf-validation queue. \n")
+
 
 def send_zd_matches(channel, matches):
     # Convert the matches to JSON format
@@ -70,6 +93,8 @@ def send_zd_matches(channel, matches):
 
     # Publish the matches to the ZD queue
     channel.basic_publish(exchange='', routing_key='zd-validation', body=matches_json)
+
+    print(f"Sent {len(matches)} rows to be validated back to the ZD via the zd-validation queue. \n")
 
 
 
@@ -100,8 +125,8 @@ def main():
         while True:
 
             # Consume one message at a time from each channel
-            eplf_method, eplf_properties, eplf_body = eplf_channel.basic_get(queue='eplf-validation', auto_ack=True)
-            zd_method, zd_properties, zd_body = zd_channel.basic_get(queue='zd-validation', auto_ack=True)
+            eplf_method, eplf_properties, eplf_body = eplf_channel.basic_get(queue='eplf-to-validator', auto_ack=False)
+            zd_method, zd_properties, zd_body = zd_channel.basic_get(queue='zd-to-validator', auto_ack=False)
 
             # If a message was received, process it
             if eplf_method:
