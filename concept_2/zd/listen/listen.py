@@ -52,7 +52,7 @@ def is_iban_valid(iban):
         return False
 
 
-def insert_into_db(conn, data):
+def insert_into_payments(conn, data):
     successfully_inserted_data = []
     invalid_iban_counter = 0
     system_error_counter = 0
@@ -155,17 +155,42 @@ def insert_into_db(conn, data):
     return successfully_inserted_data
 
 
+def insert_into_log_db(conn, successfully_inserted_data):
+    # Create a database cursor
+    cursor = conn.cursor()
+    successfully_inserted_counter = 0
+
+    # Insert the successfully inserted data into the 'Log' table of the ZD database
+    for item in successfully_inserted_data:
+
+        cursor.execute(
+            "INSERT INTO Log (payment_id, iban, validated, inserted, faulty) VALUES (%s, %s, False, now() AT TIME ZONE 'UTC', False)",
+            (item[0], item[2])
+        )
+
+        conn.commit()
+        successfully_inserted_counter += 1
+
+    print(f"Successfully inserted {successfully_inserted_counter} out of the {len(successfully_inserted_data)} records that were inserted into the 'Payments' table, into the 'Log' table of the ZD database.")
+
+
 
 # ------------- Message Queue functions ------------- #
 
 def on_receive_message(ch, method, properties, body):
     data = json.loads(body)
 
+    print(f"\nReceived message with {len(data)} rows.")
+
     # Connect to the DB
     conn = connect_to_db(host='192.168.0.24', dbname='db', user='postgres', password='postgres')
 
-    # Insert data into DB
-    successfully_inserted_data = insert_into_db(conn, data)
+    # Insert data into payments DB
+    successfully_inserted_data = insert_into_payments(conn, data)
+
+    # Insert successfully inserted data into the 'Log' table of the ZD database
+    if successfully_inserted_data:
+        insert_into_log_db(conn, successfully_inserted_data)
 
     # Convert the successfully inserted data to a JSON string
     message = json.dumps(successfully_inserted_data)

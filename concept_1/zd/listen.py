@@ -161,6 +161,8 @@ def insert_into_db(conn, data):
 def on_receive_message(ch, method, properties, body):
     data = json.loads(body)
 
+    print(f"\nReceived message with {len(data)} rows.")
+
     # Connect to the DB
     conn = connect_to_db(host='192.168.0.24', dbname='db', user='postgres', password='postgres')
 
@@ -200,7 +202,7 @@ def main():
     # Set 'on_receive_message' as the callback function for received messages
     channel.basic_consume(queue='data', on_message_callback=on_receive_message, auto_ack=False)
 
-    # Print status 
+    # Print status
     print('Awaiting messages. To exit press CTRL+C')
 
     try:

@@ -1,12 +1,9 @@
 ### Things to change:
 
-- EPLF time span to 600 (currently 60, 1 min)
+- try out concept1 with more containers (multiple eplfs)
 
-- ZD verarbeitungs variationszeit (fuers debuggen kleiner gemacht)
-
-
-- EPLF container Dockerfile have all scripts running (CMD [ "python", "-u", "./publish.py" ])
-or have 3 separate containers for the 3 things to do
+- concept2: check out what the timings / requirements are for republish and if they have to be tweaked because of
+the new validation mechanism
 
 
 
@@ -15,12 +12,10 @@ or have 3 separate containers for the 3 things to do
 
 ### Doing right now
 
-
-- fix comments, docstrings, order of functions, spacing, make nice
-
-- try to see if pushing the time i gave the fill_db to fill the db helps the publish.py to get some rows when it first starts (its always 0 now)
-
-
+- concept2:
+	- zd listen anpassen (log insert) (check)
+	- eplf / zd validation listen (check)
+	- validation listen (check)
 
 
 
@@ -87,7 +82,7 @@ ZD listen.py:
 
 Validator :
 
-- fragt periodisch 
+- fragt periodisch
 
 
 

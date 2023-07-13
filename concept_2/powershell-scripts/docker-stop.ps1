@@ -9,6 +9,9 @@ docker rm eplf-republish
 docker stop eplf-listen
 docker rm eplf-listen
 
+docker stop eplf-validation
+docker rm eplf-validation
+
 
 docker stop eplf-db
 docker rm eplf-db
@@ -19,14 +22,14 @@ docker rm fill
 
 # ------------- Stop and remove the ZD containers  ------------- #
 
-docker stop zd
-docker rm zd
+docker stop zd-listen
+docker rm zd-listen
 
-docker stop zd2
-docker rm zd2
+docker stop zd-listen2
+docker rm zd-listen2
 
-docker stop zd3
-docker rm zd3
+docker stop zd-validation
+docker rm zd-validation
 
 
 docker stop zd-db

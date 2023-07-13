@@ -1,0 +1,135 @@
+"""
+This script is run inside the validator-listen container.
+
+It listens for messages from both the EPLF and ZD via the message queue,
+which contain the unvalidated data from their respective 'Log' tables.
+
+These records then get compared and the matches get sent back to the EPLF and ZD via the message queue,
+so they can update the 'validated' field in their 'Log' tables accordingly.
+"""
+
+
+import json
+import time
+from datetime import datetime
+import pika
+
+
+# Global variables to store incoming data
+eplf_data = []
+zd_data = []
+successful_matches = []
+
+
+
+# ------------- Message Queue receive functions ------------- #
+
+def on_receive_eplf_message(ch, method, properties, body):
+    # whenever a message is received on the eplf-validation queue, store it in the eplf_data list
+    data = json.loads(body)
+    eplf_data.append(data)
+
+
+def on_receive_zd_message(ch, method, properties, body):
+    # whenever a message is received on the zd-validation queue, store it in the zd_data list
+    data = json.loads(body)
+    zd_data.append(data)
+
+
+def compare_data():
+    global eplf_data
+    global zd_data
+    global successful_matches
+
+    # Iterate through both data lists
+    for eplf_row in eplf_data:
+        for zd_row in zd_data:
+            # If the rows match, store them in the successful_matches list
+            if eplf_row == zd_row:
+                successful_matches.append(eplf_row)
+
+    # Reset the data lists for the next round of messages
+    eplf_data = []
+    zd_data = []
+
+
+
+# ------------- Message Queue publish functions ------------- #
+
+def send_eplf_matches(channel, matches):
+    # Convert the matches to JSON format
+    matches_json = json.dumps(matches)
+
+    # Publish the matches to the EPLF queue
+    channel.basic_publish(exchange='', routing_key='eplf-validation', body=matches_json)
+
+
+def send_zd_matches(channel, matches):
+    # Convert the matches to JSON format
+    matches_json = json.dumps(matches)
+
+    # Publish the matches to the ZD queue
+    channel.basic_publish(exchange='', routing_key='zd-validation', body=matches_json)
+
+
+
+# ------------- Main function ------------- #
+
+def main():
+    # Tell python to use the global variables
+    global eplf_data, zd_data, successful_matches
+
+    # Provide authentication for the mq
+    credentials = pika.PlainCredentials('rabbit', 'rabbit')
+
+    # Creating the connection to RabbitMQ
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.0.22', credentials=credentials, heartbeat=10000))
+
+    # Create the EPLF channel and queue
+    eplf_channel = connection.channel()
+    eplf_channel.queue_declare(queue='eplf-validation')
+
+    # Create the ZD channel and queue
+    zd_channel = connection.channel()
+    zd_channel.queue_declare(queue='zd-validation')
+
+    print('Waiting for messages. To exit press CTRL+C')
+
+    try:
+        # Create an infinite loop
+        while True:
+
+            # Consume one message at a time from each channel
+            eplf_method, eplf_properties, eplf_body = eplf_channel.basic_get(queue='eplf-validation', auto_ack=True)
+            zd_method, zd_properties, zd_body = zd_channel.basic_get(queue='zd-validation', auto_ack=True)
+
+            # If a message was received, process it
+            if eplf_method:
+                on_receive_eplf_message(eplf_channel, eplf_method, eplf_properties, eplf_body)
+
+            if zd_method:
+                on_receive_zd_message(zd_channel, zd_method, zd_properties, zd_body)
+
+            # Check if both lists have data
+            if eplf_data and zd_data:
+                compare_data()
+
+                # If there were successful matches, send them back to both services to have them update their 'Log' tables
+                if successful_matches:
+                    send_eplf_matches(eplf_channel, successful_matches)
+                    send_zd_matches(zd_channel, successful_matches)
+
+                    # Reset the successful_matches list for the next round of messages
+                    successful_matches = []
+
+            # Messages from the EPLF and ZD should come in about every 10 minutes at roughly the same time
+            # so checking for new messages every minute should be sufficient
+            time.sleep(60)
+
+    except KeyboardInterrupt:
+        # CTRL+C closes the connection
+        connection.close()
+
+
+if __name__ == '__main__':
+    main()

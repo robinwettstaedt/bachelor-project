@@ -5,13 +5,13 @@ FROM python:3.9-slim-buster
 WORKDIR /app
 
 # Add requirements.txt to the image
-COPY ./concept_1/db/fill/requirements.txt /app
+COPY ./concept_2/db/fill/requirements.txt /app
 
 # Install the Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Add script to the image
-COPY ./concept_1/db/fill/fill_db.py /app
+COPY ./concept_2/db/fill/fill_db.py /app
 
 # Set the command to be run when starting a container from this image
 CMD [ "python", "./fill_db.py" ]

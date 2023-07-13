@@ -24,18 +24,19 @@ Start-Sleep -Seconds 120
 
 # Start the EPLF applications
 docker run --network=containernetwork --name eplf-publish -d -p 3001:3000 eplf-publish:latest
-docker run --network=containernetwork --name eplf-listen -d -p 3003:3000 eplf-listen:latest
-docker run --network=containernetwork --name eplf-republish -d -p 3002:3000 eplf-republish:latest
+docker run --network=containernetwork --name eplf-listen -d -p 3002:3000 eplf-listen:latest
+docker run --network=containernetwork --name eplf-republish -d -p 3003:3000 eplf-republish:latest
+docker run --network=containernetwork --name eplf-validation -d -p 3004:3000 eplf-validation:latest
 
 
 
 # Start the ZD db
-docker run --network=containernetwork --ip 192.168.0.24 --name zd-db -d -p 3004:3000 zd-db:latest
+docker run --network=containernetwork --ip 192.168.0.24 --name zd-db -d -p 3005:3000 zd-db:latest
 
 # wait for the database to start
 Start-Sleep -Seconds 30
 
 # Start the ZD applications
-docker run --network=containernetwork --name zd -d -p 3005:3000 zd:latest
-docker run --network=containernetwork --name zd2 -d -p 3006:3000 zd:latest
-docker run --network=containernetwork --name zd3 -d -p 3007:3000 zd:latest
+docker run --network=containernetwork --name zd-listen -d -p 3006:3000 zd-listen:latest
+docker run --network=containernetwork --name zd-listen2 -d -p 3007:3000 zd-listen:latest
+docker run --network=containernetwork --name zd-validation -d -p 3008:3000 zd-validation:latest

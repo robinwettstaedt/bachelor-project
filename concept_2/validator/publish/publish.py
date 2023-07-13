@@ -1,8 +1,8 @@
 """
-This script is run inside the validator container.
+This script is run inside the validator-publish container.
 
 It periodically sends a message to both (the EPLF and ZD) via the message queue,
-which triggers them to send the unvalidated data in their 'Log' tables back to the validator,
+which triggers them to send the unvalidated rows in their 'Log' tables back to the validator,
 which listens for said messages via its own listen.py script.
 """
 

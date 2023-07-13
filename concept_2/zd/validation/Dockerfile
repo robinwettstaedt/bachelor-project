@@ -5,15 +5,13 @@ FROM python:3.9-slim-buster
 WORKDIR /app
 
 # Add requirements.txt to the image
-COPY ./concept_1/zd/requirements.txt /app
+COPY ./concept_2/zd/requirements.txt /app
 
 # Install the Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Add script to the image
-COPY ./concept_1/zd/listen.py /app
-# COPY ./concept_1/zd/publish.py /app
-# COPY ./concept_1/zd/run.sh /app
+COPY ./concept_2/zd/validation/validation.py /app
 
 # Set the command to be run when starting a container from this image
-CMD [ "python", "-u", "./listen.py" ]
+CMD [ "python", "-u", "./validation.py" ]

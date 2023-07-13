@@ -10,7 +10,8 @@ ENV RABBITMQ_DEFAULT_PASS=rabbit
 ENV RABBITMQ_HEARTBEAT=0
 
 # Include the configuration file
-COPY rabbitmq.conf /etc/rabbitmq/
+COPY ./concept_2/mq/rabbitmq.conf /etc/rabbitmq/
+
 
 # Expose ports
 # 5672: used by AMQP 0-9-1 and 1.0 clients without and with TLS
