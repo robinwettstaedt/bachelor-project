@@ -195,13 +195,13 @@ def on_receive_message(ch, method, properties, body):
     # Convert the successfully inserted data to a JSON string
     message = json.dumps(successfully_inserted_data)
 
-    # Acknowledge message so it can be removed from the queue
-    ch.basic_ack(delivery_tag=method.delivery_tag)
-    print(f"Message acknowledged: {method.delivery_tag}")
-
     # Send the message to the queue
     ch.basic_publish(exchange='', routing_key='validation', body=message)
     print(f"Message sent to the validation queue.")
+    
+    # Acknowledge message so it can be removed from the queue
+    ch.basic_ack(delivery_tag=method.delivery_tag)
+    print(f"Message acknowledged: {method.delivery_tag}")
 
     # Close the database connection when done
     if conn:

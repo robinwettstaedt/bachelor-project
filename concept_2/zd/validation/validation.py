@@ -44,7 +44,7 @@ def get_data_from_log(conn):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT id, payment_id, validated, iban, faulty
+        SELECT payment_id, validated, iban, faulty
         FROM Log
         WHERE validated = false
         AND faulty = false
@@ -69,6 +69,7 @@ def update_log(conn, data):
             (payment_id,)
         )
 
+        conn.commit()
 
     print(f"Updated {len(data)} records in the 'Log' table of the ZD database to be validated. \n")
 
@@ -134,10 +135,10 @@ def main():
     channel = connection.channel()
 
     # Declare the queue from which to receive messages
-    channel.queue_declare(queue='zd-validation')
+    channel.queue_declare(queue='validator-to-zd')
 
     # Declare the callback function
-    channel.basic_consume(queue='zd-validation', on_message_callback=on_receive_message, auto_ack=False)
+    channel.basic_consume(queue='validator-to-zd', on_message_callback=on_receive_message, auto_ack=False)
 
     print('Waiting for messages. To exit press CTRL+C')
 

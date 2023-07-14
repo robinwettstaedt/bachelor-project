@@ -7,7 +7,9 @@ the new validation mechanism
 
 
 
-
+Eventuell:
+	- Extra Uberwacherservice
+	- checkt direkt beide DBs und bietet eine Art Interface, um die Staende zu verschiedenen Zeitpunkten zu sehen 
 
 
 ### Doing right now

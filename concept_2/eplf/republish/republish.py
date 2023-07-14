@@ -81,12 +81,18 @@ def get_data_from_payments(conn, log_data):
     if not log_data:
         return []
 
-    # get all rows from the 'Payments' table, where the payment_id matches all the ids in the log_data
+    # Build the tuple of ids
+    ids = tuple(row[0] for row in log_data)
+
+    # If there's only one id, put it in a tuple to avoid SQL syntax issues
+    if len(ids) == 1:
+        ids = (ids,)
+
     cursor.execute(f"""
                     SELECT id, amount, iban, TO_CHAR(payment_date,'YYYY-MM-DD') as payment_date
                     FROM Payments
-                    WHERE id IN {tuple([row[0] for row in log_data])}
-                   """)
+                    WHERE id IN {ids}
+                """)
 
     return cursor.fetchall()
 

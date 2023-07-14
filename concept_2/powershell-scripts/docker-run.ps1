@@ -37,7 +37,7 @@ Start-Sleep -Seconds 30
 
 # Start the ZD containers
 docker run --network=containernetwork --name zd-listen -d -p 3006:3000 zd-listen:latest
-docker run --network=containernetwork --name zd-listen2 -d -p 3007:3000 zd-listen:latest
+# docker run --network=containernetwork --name zd-listen2 -d -p 3007:3000 zd-listen:latest
 docker run --network=containernetwork --name zd-validation -d -p 3008:3000 zd-validation:latest
 
 

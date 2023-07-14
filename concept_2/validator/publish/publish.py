@@ -23,11 +23,11 @@ def main():
 
     # Create the EPLF channel and queue
     eplf_channel = connection.channel()
-    eplf_channel.queue_declare(queue='eplf-validation')
+    eplf_channel.queue_declare(queue='validator-to-eplf')
 
     # Create the ZD channel and queue
     zd_channel = connection.channel()
-    zd_channel.queue_declare(queue='zd-validation')
+    zd_channel.queue_declare(queue='validator-to-zd')
 
     sent_counter = 0
 
@@ -35,11 +35,11 @@ def main():
         # No message content needed. The message itself is the trigger.
         message = ""
 
-        # Publish the message to the eplf-validation queue.
-        eplf_channel.basic_publish(exchange='', routing_key='eplf-validation', body=message)
+        # Publish the message to the validator-to-eplf queue.
+        eplf_channel.basic_publish(exchange='', routing_key='validator-to-eplf', body=message)
 
-        # Publish the message to the zd-validation queue.
-        zd_channel.basic_publish(exchange='', routing_key='zd-validation', body=message)
+        # Publish the message to the validator-to-zd queue.
+        zd_channel.basic_publish(exchange='', routing_key='validator-to-zd', body=message)
 
         # Increment the counter.
         sent_counter += 1
@@ -47,8 +47,8 @@ def main():
         print(f"Sent message to both EPLF and ZD.")
         print(f"This is iteration number: {sent_counter}.\n")
 
-        # Wait 5 minutes before sending the next message.
-        time.sleep(300)
+        # Wait 2 minutes before sending the next message.
+        time.sleep(120)
 
 
 if __name__ == '__main__':
