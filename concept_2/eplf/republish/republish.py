@@ -81,17 +81,27 @@ def get_data_from_payments(conn, log_data):
     if not log_data:
         return []
 
+    print(f"Log data: {log_data}")
+
     # Build the tuple of ids
     ids = tuple(row[0] for row in log_data)
 
-    # If there's only one id, put it in a tuple to avoid SQL syntax issues
-    if len(ids) == 1:
-        ids = (ids,)
+    # Note: Trailing commas need to be remove from the tuple, else the SQL query will fail
+    # Convert the tuple to a string and remove trailing comma
+    ids_as_string = str(ids).rstrip(',')
+
+    # Convert the modified string back to a tuple
+    ids_without_trailing_comma = eval(ids_as_string)
+
+
+    # # If there's only one id, put it in a tuple to avoid SQL syntax issues
+    # if len(ids) == 1:
+    #     ids = (ids,)
 
     cursor.execute(f"""
                     SELECT id, amount, iban, TO_CHAR(payment_date,'YYYY-MM-DD') as payment_date
                     FROM Payments
-                    WHERE id IN {ids}
+                    WHERE id IN {ids_without_trailing_comma}
                 """)
 
     return cursor.fetchall()
@@ -146,7 +156,7 @@ def main():
             print(f"Sent {sent_counter} rows in total \n")
 
         # Wait 10 minutes before sending the next message
-        time.sleep(600)
+        time.sleep(60)
 
 
 if __name__ == '__main__':

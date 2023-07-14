@@ -9,16 +9,14 @@ the new validation mechanism
 
 Eventuell:
 	- Extra Uberwacherservice
-	- checkt direkt beide DBs und bietet eine Art Interface, um die Staende zu verschiedenen Zeitpunkten zu sehen 
+	- checkt direkt beide DBs und bietet eine Art Interface, um die Staende zu verschiedenen Zeitpunkten zu sehen
 
 
 ### Doing right now
 
-- concept2:
-	- validation in zd/eplf: die schicken sich ihre eigenen Daten...
-		- weiterer Channel benoetigt
+look at republish concept2, changed the tuples thing, that had trailing comma. do that for every one else (eg. concept1 republish)
 
-		ist fixed, muss getestet werden
+
 
 
 

@@ -40,10 +40,6 @@ def on_receive_eplf_message(ch, method, properties, body):
 
         print(f"Received {len(data)} rows from the EPLF. \n")
 
-    # Acknowledge message so it can be removed from the queue
-    ch.basic_ack(delivery_tag=method.delivery_tag)
-    print(f"Message acknowledged: {method.delivery_tag}")
-
 
 def on_receive_zd_message(ch, method, properties, body):
     # whenever a message is received on the validator-to-zd queue, store it in the zd_data list
@@ -60,10 +56,6 @@ def on_receive_zd_message(ch, method, properties, body):
         zd_data = data
 
         print(f"Received {len(data)} rows from the ZD. \n")
-
-    # Acknowledge message so it can be removed from the queue
-    ch.basic_ack(delivery_tag=method.delivery_tag)
-    print(f"Message acknowledged: {method.delivery_tag}")
 
 
 def compare_data():
