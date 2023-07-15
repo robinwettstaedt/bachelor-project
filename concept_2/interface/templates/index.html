@@ -1,26 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Database Results</title>
+    <style>
+        table {
+            width: 96%;
+            border-collapse: collapse;
+            margin: 0 2%;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: right;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+    </style>
+
+    <!-- include jQuery from a CDN -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/static/main.js"></script>
+    
 </head>
 <body>
     <table>
         <thead>
             <tr>
-                <th>EPLF Payments</th>
-                <th>EPLF Logs</th>
-                <th>ZD Payments</th>
-                <th>ZD Logs</th>
+                <th>EPLF Payments Count</th>
+                <th>ZD Payments Count</th>
+                <th>EPLF Log Count</th>
+                <th>ZD Log Count</th>
+                <th>Time</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td id="eplf-payments"></td>
-                <td id="eplf-logs"></td>
-                <td id="zd-payments"></td>
-                <td id="zd-logs"></td>
-            </tr>
+        <tbody id="data-table">
+            <!-- <tr>
+                <td id="eplf_payment_data">{{ eplf_payment_data }}</td>
+                <td id="zd_payment_data">{{ zd_payment_data }}</td>
+                <td id="eplf_log_data">{{ eplf_log_data }}</td>
+                <td id="zd_log_data">{{ zd_log_data }}</td>
+                <td id="current_time">{{ current_time }}</td>
+            </tr> -->
         </tbody>
     </table>
 </body>

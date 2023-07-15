@@ -1,59 +1,63 @@
 from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text, create_engine
 
 app = Flask(__name__)
 
-# Connection strings for the two databases
-app.config['SQLALCHEMY_BINDS'] = {
-    'eplf_db': 'postgresql://postgres:postgres@192.168.0.23:5432/db',
-    'zd_db': 'postgresql://postgres:postgres@192.168.0.24:5432/db'
-}
-
-db = SQLAlchemy(app)
-
-class EplfPayments(db.Model):
-    __bind_key__ = 'eplf_db'
-    __tablename__ = 'Payments' # name of your table
-    id = db.Column(db.Integer, primary_key=True)
-
-class EplfLog(db.Model):
-    __bind_key__ = 'eplf_db'
-    __tablename__ = 'Log' # name of your table
-    id = db.Column(db.Integer, primary_key=True)
-
-class ZdPayments(db.Model):
-    __bind_key__ = 'zd_db'
-    __tablename__ = 'Payments' # name of your table
-    id = db.Column(db.Integer, primary_key=True)
-
-class ZdLog(db.Model):
-    __bind_key__ = 'zd_db'
-    __tablename__ = 'Log' # name of your table
-    id = db.Column(db.Integer, primary_key=True)
+# Create SQLAlchemy engines
+engine_eplf = create_engine('postgresql://postgres:postgres@192.168.0.23:5432/db')
+engine_zd = create_engine('postgresql://postgres:postgres@192.168.0.24:5432/db')
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    try:
+        with engine_eplf.connect() as connection:
+            result_eplf = connection.execute(text("SELECT COUNT(*) FROM Payments"))
+            eplf_payment_data = result_eplf.fetchone()[0]
 
-@app.route('/api/eplf_payments')
-def get_eplf_payments():
-    payments = EplfPayments.query.all()
-    return jsonify([payment.id for payment in payments])
+        with engine_zd.connect() as connection:
+            result_zd = connection.execute(text("SELECT COUNT(*) FROM Payments"))
+            zd_payment_data = result_zd.fetchone()[0]
 
-@app.route('/api/eplf_logs')
-def get_eplf_logs():
-    logs = EplfLog.query.all()
-    return jsonify([log.id for log in logs])
+        with engine_eplf.connect() as connection:
+            result_eplf = connection.execute(text("SELECT COUNT(*) FROM Log"))
+            eplf_log_data = result_eplf.fetchone()[0]
 
-@app.route('/api/zd_payments')
-def get_zd_payments():
-    payments = ZdPayments.query.all()
-    return jsonify([payment.id for payment in payments])
+        with engine_zd.connect() as connection:
+            result_zd = connection.execute(text("SELECT COUNT(*) FROM Log"))
+            zd_log_data = result_zd.fetchone()[0]
 
-@app.route('/api/zd_logs')
-def get_zd_logs():
-    logs = ZdLog.query.all()
-    return jsonify([log.id for log in logs])
+        return render_template('index.html', eplf_payment_data=eplf_payment_data, zd_payment_data=zd_payment_data, eplf_log_data=eplf_log_data, zd_log_data=zd_log_data)
+    except Exception as e:
+        return str(e)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+@app.route('/update_data')
+def update_data():
+    try:
+        with engine_eplf.connect() as connection:
+            result_eplf = connection.execute(text("SELECT COUNT(*) FROM Payments"))
+            eplf_payment_data = result_eplf.fetchone()[0]
+
+        with engine_zd.connect() as connection:
+            result_zd = connection.execute(text("SELECT COUNT(*) FROM Payments"))
+            zd_payment_data = result_zd.fetchone()[0]
+
+        with engine_eplf.connect() as connection:
+            result_eplf = connection.execute(text("SELECT COUNT(*) FROM Log"))
+            eplf_log_data = result_eplf.fetchone()[0]
+
+        with engine_zd.connect() as connection:
+            result_zd = connection.execute(text("SELECT COUNT(*) FROM Log"))
+            zd_log_data = result_zd.fetchone()[0]
+
+        return jsonify({
+            'eplf_payment_data': eplf_payment_data,
+            'zd_payment_data': zd_payment_data,
+            'eplf_log_data': eplf_log_data,
+            'zd_log_data': zd_log_data
+        })
+    except Exception as e:
+        return str(e)
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000, debug=True)

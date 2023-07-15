@@ -2,21 +2,23 @@
 
 - try out concept1 with more containers (multiple eplfs)
 
-- concept2: check out what the timings / requirements are for republish and if they have to be tweaked because of
-the new validation mechanism
 
 
-
-Eventuell:
-	- Extra Uberwacherservice
-	- checkt direkt beide DBs und bietet eine Art Interface, um die Staende zu verschiedenen Zeitpunkten zu sehen
 
 
 ### Doing right now
 
-look at republish concept2, changed the tuples thing, that had trailing comma. do that for every one else (eg. concept1 republish)
+- adjust the timings of validaton and stuff to have some time were the data is actually consistent
+- work on the interface, colored rows, new column
 
 
+#### Interface Cols
+
+EPLF Payments (all)  |  ZD Payments (all)  |  EPLF Log (all)  |  ZD Log (all)  |  EPLF Log (validated, not faulty)  | ZD Log (validated)
+
+Wann consistent?:
+	- wenn alle die losgeschickt wurden auch korrekt verarbeitet wurden
+	- Count EPLF Log (not faulty) == Count ZD Log    &&     alle non-faulty sind validated
 
 
 
