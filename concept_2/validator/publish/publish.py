@@ -19,7 +19,7 @@ def main():
     credentials = pika.PlainCredentials('rabbit', 'rabbit')
 
     # Creating the connection to RabbitMQ
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.0.22', credentials=credentials, heartbeat=10000))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.0.22', credentials=credentials, heartbeat=65535))
 
     # Create the EPLF channel and queue
     eplf_channel = connection.channel()

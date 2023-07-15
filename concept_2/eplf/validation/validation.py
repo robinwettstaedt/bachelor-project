@@ -94,10 +94,6 @@ def on_receive_message(ch, method, properties, body):
     if data and len(data) > 0:
         update_log(conn, data)
 
-        # Acknowledge message so it can be removed from the queue
-        ch.basic_ack(delivery_tag=method.delivery_tag)
-        print(f"Message acknowledged: {method.delivery_tag}")
-
     else:
         # retrieve the data from the 'Log' table
         log_data = get_data_from_log(conn)
@@ -107,16 +103,16 @@ def on_receive_message(ch, method, properties, body):
             # Convert the successfully inserted data to a JSON string
             message = json.dumps(log_data)
 
-            # Acknowledge message so it can be removed from the queue
-            ch.basic_ack(delivery_tag=method.delivery_tag)
-            print(f"Message acknowledged: {method.delivery_tag}")
-
             # Send the message to the queue
             ch.basic_publish(exchange='', routing_key='eplf-to-validator', body=message)
             print(f"{len(log_data)} unvalidated rows sent back to the validator service via the eplf-to-validator queue. \n")
 
         else:
             print(f"No unvalidated rows found in the 'Log' table of the EPLF database. \n")
+
+    # Acknowledge message so it can be removed from the queue
+    ch.basic_ack(delivery_tag=method.delivery_tag)
+    print(f"Message acknowledged: {method.delivery_tag}")
 
     # Close the database connection when done
     if conn:
@@ -131,7 +127,7 @@ def main():
     credentials = pika.PlainCredentials('rabbit', 'rabbit')
 
     # Creating the connection to RabbitMQ
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.0.22', credentials=credentials, heartbeat=10000))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.0.22', credentials=credentials, heartbeat=65535))
     channel = connection.channel()
 
     # Declare the queue from which to receive messages

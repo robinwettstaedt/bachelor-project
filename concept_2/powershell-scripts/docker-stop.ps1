@@ -1,54 +1,60 @@
-# ------------- Stop and remove the EPLF containers  ------------- #
+# # ------------- Stop and remove the EPLF containers  ------------- #
 
-docker stop eplf-publish
-docker rm eplf-publish
+# docker stop eplf-publish
+# docker rm eplf-publish
 
-docker stop eplf-republish
-docker rm eplf-republish
+# docker stop eplf-republish
+# docker rm eplf-republish
 
-docker stop eplf-validation
-docker rm eplf-validation
-
-
-docker stop eplf-db
-docker rm eplf-db
-
-docker stop fill
-docker rm fill
+# docker stop eplf-validation
+# docker rm eplf-validation
 
 
-# ------------- Stop and remove the ZD containers  ------------- #
+# docker stop eplf-db
+# docker rm eplf-db
 
-docker stop zd-listen
-docker rm zd-listen
-
-docker stop zd-listen2
-docker rm zd-listen2
-
-docker stop zd-validation
-docker rm zd-validation
+# docker stop fill
+# docker rm fill
 
 
-docker stop zd-db
-docker rm zd-db
+# # ------------- Stop and remove the ZD containers  ------------- #
+
+# docker stop zd-listen
+# docker rm zd-listen
+
+# docker stop zd-listen2
+# docker rm zd-listen2
+
+# docker stop zd-validation
+# docker rm zd-validation
 
 
-# ------------- Stop and remove the validator containers  ------------- #
-
-docker stop validator-listen
-docker rm validator-listen
-
-docker stop validator-publish
-docker rm validator-publish
+# docker stop zd-db
+# docker rm zd-db
 
 
+# # ------------- Stop and remove the validator containers  ------------- #
 
-# ------------- Stop and remove the Message Queue containers  ------------- #
+# docker stop validator-listen
+# docker rm validator-listen
 
-docker stop mq
-docker rm mq
+# docker stop validator-publish
+# docker rm validator-publish
 
 
-# ------------- Remove the Docker network ------------- #
 
-docker network rm containernetwork
+# # ------------- Stop and remove the Message Queue containers  ------------- #
+
+# docker stop mq
+# docker rm mq
+
+
+# ------------- Stop and remove the web interface containers  ------------- #
+
+docker stop interface
+docker rm interface
+
+
+# # ------------- Remove the Docker network ------------- #
+
+# docker network rm containernetwork

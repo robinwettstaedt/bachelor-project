@@ -96,7 +96,7 @@ def send_zd_matches(channel, matches):
     # Publish the matches to the ZD queue
     channel.basic_publish(exchange='', routing_key='validator-to-zd', body=matches_json)
 
-    print(f"Sent {len(matches)} rows to be validated back to the ZD via the zd-validation queue. \n")
+    print(f"Sent {len(matches)} rows to be validated back to the ZD via the validator-to-zd queue. \n")
 
 
 
@@ -110,23 +110,25 @@ def main():
     credentials = pika.PlainCredentials('rabbit', 'rabbit')
 
     # Creating the connection to RabbitMQ
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.0.22', credentials=credentials, heartbeat=10000))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.0.22', credentials=credentials, heartbeat=65535))
 
     # Create the EPLF channel and queue
-    eplf_validation_channel = connection.channel()
-    eplf_validation_channel.queue_declare(queue='validator-to-eplf')
+    validator_to_eplf_channel = connection.channel()
+    validator_to_eplf_channel.queue_declare(queue='validator-to-eplf')
 
     # Create the EPLF to validator channel and queue
     eplf_to_validator_channel = connection.channel()
     eplf_to_validator_channel.queue_declare(queue='eplf-to-validator')
 
     # Create the ZD validation channel and queue
-    zd_validation_channel = connection.channel()
-    zd_validation_channel.queue_declare(queue='zd-validation')
+    validator_to_zd_channel = connection.channel()
+    validator_to_zd_channel.queue_declare(queue='validator-to-zd')
 
     # Create the ZD to validator channel and queue
     zd_to_validator_channel = connection.channel()
     zd_to_validator_channel.queue_declare(queue='zd-to-validator')
+
+    # Todo: fix
 
     print('Waiting for messages. To exit press CTRL+C')
 
@@ -140,10 +142,10 @@ def main():
 
             # If a message was received, process it
             if eplf_method:
-                on_receive_eplf_message(eplf_validation_channel, eplf_method, eplf_properties, eplf_body)
+                on_receive_eplf_message(eplf_to_validator_channel, eplf_method, eplf_properties, eplf_body)
 
             if zd_method:
-                on_receive_zd_message(zd_validation_channel, zd_method, zd_properties, zd_body)
+                on_receive_zd_message(zd_to_validator_channel, zd_method, zd_properties, zd_body)
 
             # Check if both lists have data
             if eplf_data and zd_data:
@@ -151,8 +153,8 @@ def main():
 
                 # If there were successful matches, send them back to both services to have them update their 'Log' tables
                 if successful_matches:
-                    send_eplf_matches(eplf_validation_channel, successful_matches)
-                    send_zd_matches(zd_validation_channel, successful_matches)
+                    send_eplf_matches(validator_to_eplf_channel, successful_matches)
+                    send_zd_matches(validator_to_zd_channel, successful_matches)
 
                     # Reset the successful_matches list for the next round of messages
                     successful_matches = []

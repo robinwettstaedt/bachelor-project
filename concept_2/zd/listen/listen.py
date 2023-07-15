@@ -192,13 +192,6 @@ def on_receive_message(ch, method, properties, body):
     if successfully_inserted_data:
         insert_into_log_db(conn, successfully_inserted_data)
 
-    # Convert the successfully inserted data to a JSON string
-    message = json.dumps(successfully_inserted_data)
-
-    # Send the message to the queue
-    ch.basic_publish(exchange='', routing_key='validation', body=message)
-    print(f"Message sent to the validation queue.")
-    
     # Acknowledge message so it can be removed from the queue
     ch.basic_ack(delivery_tag=method.delivery_tag)
     print(f"Message acknowledged: {method.delivery_tag}")
@@ -216,7 +209,7 @@ def main():
     credentials = pika.PlainCredentials('rabbit', 'rabbit')
 
     # Creating the connection to RabbitMQ
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.0.22', credentials=credentials, heartbeat=10000))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.0.22', credentials=credentials, heartbeat=65535))
     channel = connection.channel()
 
   # Declare the queue from which to receive messages
