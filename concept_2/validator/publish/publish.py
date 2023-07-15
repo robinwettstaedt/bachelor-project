@@ -47,8 +47,8 @@ def main():
         print(f"Sent message to both EPLF and ZD.")
         print(f"This is iteration number: {sent_counter}.\n")
 
-        # Wait 2 minutes before sending the next message.
-        time.sleep(120)
+        # Wait 1 minutes before sending the next message.
+        time.sleep(60)
 
 
 if __name__ == '__main__':

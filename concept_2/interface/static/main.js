@@ -11,11 +11,11 @@ $(document).ready(function() {
             .then(function(data) {
                 // Create a new row with the updated data
                 var newRow = '<tr>' +
+                                '<td>' + getCurrentTime() + '</td>' +
                                 '<td>' + data['eplf_payment_data'] + '</td>' +
                                 '<td>' + data['zd_payment_data'] + '</td>' +
                                 '<td>' + data['eplf_log_data'] + '</td>' +
                                 '<td>' + data['zd_log_data'] + '</td>' +
-                                '<td>' + getCurrentTime() + '</td>' +
                              '</tr>';
 
                 // Append the new row to the table body

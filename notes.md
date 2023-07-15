@@ -9,6 +9,13 @@
 ### Doing right now
 
 - adjust the timings of validaton and stuff to have some time were the data is actually consistent
+already adjusted:
+	C2:
+		- republish.py (5 min)
+		- validator listen.py (45 secs)
+		- validator publish.py (1 min)
+		- zd listen.py (ms reduziert, (0.001, 0.005), 0.05)
+
 - work on the interface, colored rows, new column
 
 

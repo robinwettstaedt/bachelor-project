@@ -64,45 +64,41 @@ def filter_log_data(data) -> list:
         # calculate the time difference between now and the time the row was inserted
         time_diff = (datetime.datetime.utcnow() - inserted).total_seconds()
 
-        # if the time difference is greater than 20 minutes, add the row to the filtered data
-        if time_diff > 1200:
+        # if the time difference is greater than 5 minutes, add the row to the filtered data
+        if time_diff > 300:
             filtered_data.append((payment_id, iban, validated, inserted))
 
     return filtered_data
 
 
 def get_data_from_payments(conn, log_data):
-    # This function retrieves up to 1000 rows from the 'Payments' table
-    # that correspond to rows in the 'Log' table, which have not been validated yet,
-    # and which have been inserted more than 3 minutes ago.
     cursor = conn.cursor()
 
     # If log_data is empty, return an empty list
     if not log_data:
         return []
 
-    print(f"Log data: {log_data}")
 
-    # Build the tuple of ids
-    ids = tuple(row[0] for row in log_data)
+    if len(log_data) == 1:
+        # If there's only one row, doing the standard way will result in a syntax error within the SQL query
+        id = log_data[0][0]
 
-    # Note: Trailing commas need to be remove from the tuple, else the SQL query will fail
-    # Convert the tuple to a string and remove trailing comma
-    ids_as_string = str(ids).rstrip(',')
+        cursor.execute(f"""
+                        SELECT id, amount, iban, TO_CHAR(payment_date,'YYYY-MM-DD') as payment_date
+                        FROM Payments
+                        WHERE id = {id}
+                    """)
 
-    # Convert the modified string back to a tuple
-    ids_without_trailing_comma = eval(ids_as_string)
+    else:
+        # Build the tuple of ids
+        ids = tuple(row[0] for row in log_data)
 
 
-    # # If there's only one id, put it in a tuple to avoid SQL syntax issues
-    # if len(ids) == 1:
-    #     ids = (ids,)
-
-    cursor.execute(f"""
-                    SELECT id, amount, iban, TO_CHAR(payment_date,'YYYY-MM-DD') as payment_date
-                    FROM Payments
-                    WHERE id IN {ids_without_trailing_comma}
-                """)
+        cursor.execute(f"""
+                        SELECT id, amount, iban, TO_CHAR(payment_date,'YYYY-MM-DD') as payment_date
+                        FROM Payments
+                        WHERE id IN {ids}
+                    """)
 
     return cursor.fetchall()
 
@@ -155,7 +151,7 @@ def main():
             sent_counter += len(payments_data)
             print(f"Sent {sent_counter} rows in total \n")
 
-        # Wait 10 minutes before sending the next message
+        # Wait 1 minute before sending the next message
         time.sleep(60)
 
 

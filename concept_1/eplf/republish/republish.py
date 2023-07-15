@@ -72,21 +72,22 @@ def filter_log_data(data) -> list:
 
 
 def get_data_from_payments(conn, log_data):
-    # This function retrieves up to 1000 rows from the 'Payments' table
-    # that correspond to rows in the 'Log' table, which have not been validated yet,
-    # and which have been inserted more than 3 minutes ago.
     cursor = conn.cursor()
 
     # If log_data is empty, return an empty list
     if not log_data:
         return []
 
-    # Build the tuple of ids
-    ids = tuple(row[0] for row in log_data)
 
-    # If there's only one id, put it in a tuple to avoid SQL syntax issues
-    if len(ids) == 1:
-        ids = (ids,)
+    if len(log_data) == 1:
+        # If there's only one row, doing the standard way will result in a syntax error within the SQL query
+        ids = []
+        ids.append(log_data[0][0])
+
+    else:
+        # Build the tuple of ids
+        ids = tuple(row[0] for row in log_data)
+
 
     cursor.execute(f"""
                     SELECT id, amount, iban, TO_CHAR(payment_date,'YYYY-MM-DD') as payment_date
@@ -95,7 +96,6 @@ def get_data_from_payments(conn, log_data):
                 """)
 
     return cursor.fetchall()
-
 
 
 # ------------- Main function ------------- #

@@ -65,7 +65,7 @@ def insert_into_payments(conn, data):
     # will return a value between 0.01 and 0.1 (10ms to 100ms) 95% of the time, and will return 1 (1 second) 5% of the time.
     def generate_sleep_time():
         return random.choices(
-            population=[random.uniform(0.01, 0.05), 0.1],  # The possible sleep times
+            population=[random.uniform(0.001, 0.005), 0.05],  # The possible sleep times
             weights=[0.95, 0.05],  # The probabilities for each sleep time
             k=1
         )[0]

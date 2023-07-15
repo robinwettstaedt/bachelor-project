@@ -159,9 +159,9 @@ def main():
                     # Reset the successful_matches list for the next round of messages
                     successful_matches = []
 
-            # Messages from the EPLF and ZD should come in about every 10 minutes at roughly the same time
-            # so checking for new messages every minute should be sufficient
-            time.sleep(60)
+            # Messages from the EPLF and ZD should come in about every minute at roughly the same time
+            # so checking for new messages every 45 seconds should be sufficient
+            time.sleep(45)
 
     except KeyboardInterrupt:
         # CTRL+C closes the connection
