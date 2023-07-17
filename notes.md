@@ -5,17 +5,34 @@
 
 ### TODO:
 
-- Anleitung README
-
 - IBAN Validierung im ZD
 
 - (evtl.) Interface ohne direkten DB Zugriff
+
+### IBAN im ZD
+
+EPLF:
+- does not know if a date is / was faulty, will never know
+- do not check for iban validity
+- do not have `faulty` field in Log
+- just send to ZD
+
+ZD listen:
+- checks for IBAN validity
+- if not valid:
+	- insert into Log with faulty=True
+	- do not insert into Payments
+	- move the insertion into Log up into the previous function, do both insertions in one place
+
+validator and interface:
+- check validator
+- in interface just change the conditions and queries around
 
 
 
 ### Doing right now
 
-- adjust the timings of validaton and stuff to have some time were the data is actually consistent
+- adjust the timings of validaton and stuff to have some time were the data is actually (in)consistent
 already adjusted:
 	C2:
 		- republish.py (2 min)
