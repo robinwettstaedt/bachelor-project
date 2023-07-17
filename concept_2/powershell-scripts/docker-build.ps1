@@ -25,12 +25,12 @@ docker build --no-cache --rm -f "..\zd\validation\Dockerfile" -t zd-validation:l
 
 
 
-# build the validator images
+# # build the validator images
 docker build --no-cache --rm -f "..\validator\listen\Dockerfile" -t validator-listen:latest "..\..\"
 docker build --no-cache --rm -f "..\validator\publish\Dockerfile" -t validator-publish:latest "..\..\"
 
 
 
-# build the web interface
-docker build --no-cache --rm -f "..\interface\Dockerfile" -t interface-base:latest "..\..\"
+# # build the web interface
+# docker build --no-cache --rm -f "..\interface\Dockerfile" -t interface-base:latest "..\..\"
 docker build --no-cache --rm -f "..\interface\Dockerfile2" -t interface:latest "..\..\"

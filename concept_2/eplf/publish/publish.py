@@ -148,8 +148,8 @@ def main():
         sent_counter += len(filtered_data)
         print(f"Sent {sent_counter} rows in total\n")
 
-        # Wait 10 minutes before sending the next message.
-        time.sleep(600)
+        # Wait 5 minutes before sending the next message.
+        time.sleep(300)
 
 
 if __name__ == '__main__':

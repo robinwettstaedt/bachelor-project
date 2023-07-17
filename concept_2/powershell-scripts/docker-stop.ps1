@@ -55,6 +55,6 @@ docker stop interface
 docker rm interface
 
 
-# # ------------- Remove the Docker network ------------- #
+# ------------- Remove the Docker network ------------- #
 
 docker network rm containernetwork

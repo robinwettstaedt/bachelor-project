@@ -64,8 +64,8 @@ def filter_log_data(data) -> list:
         # calculate the time difference between now and the time the row was inserted
         time_diff = (datetime.datetime.utcnow() - inserted).total_seconds()
 
-        # if the time difference is greater than 5 minutes, add the row to the filtered data
-        if time_diff > 300:
+        # if the time difference is greater than 2 minutes, add the row to the filtered data
+        if time_diff > 120:
             filtered_data.append((payment_id, iban, validated, inserted))
 
     return filtered_data

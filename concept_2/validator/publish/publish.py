@@ -48,7 +48,7 @@ def main():
         print(f"This is iteration number: {sent_counter}.\n")
 
         # Wait 1 minutes before sending the next message.
-        time.sleep(60)
+        time.sleep(120)
 
 
 if __name__ == '__main__':

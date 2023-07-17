@@ -4,19 +4,30 @@ $(document).ready(function() {
         fetch('/update_data')
             .then(function(response) {
                 if (!response.ok) {
-                    throw new Error('Error: ' + response.status);
+                    throw new Error('HTTP error, status = ' + response.status);
                 }
-                return response.json();
+                return response.json();  // This returns a promise
             })
             .then(function(data) {
-                // Create a new row with the updated data
-                var newRow = '<tr>' +
+                // Now 'data' is the actual JSON data
+
+                // Determine the row class based on the data
+                var rowClass = (data['eplf_log_validated'] == data['zd_log_validated'] && data['zd_log_all'] == data['eplf_log_not_faulty']) ? 'green-row' : 'red-row';
+                var darkCell1 = (rowClass == 'green-row') ? 'dark-cell-1-green' : 'dark-cell-1-red';
+                var darkCell2 = (rowClass == 'green-row') ? 'dark-cell-2-green' : 'dark-cell-2-red';
+
+                // Create a new row with the updated data and the determined class
+                var newRow = '<tr class="' + rowClass + '">' +
                                 '<td>' + getCurrentTime() + '</td>' +
-                                '<td>' + data['eplf_payment_data'] + '</td>' +
-                                '<td>' + data['zd_payment_data'] + '</td>' +
-                                '<td>' + data['eplf_log_data'] + '</td>' +
-                                '<td>' + data['zd_log_data'] + '</td>' +
-                             '</tr>';
+                                '<td>' + data['eplf_payment_all'] + '</td>' +
+                                '<td>' + data['zd_payment_all'] + '</td>' +
+                                // '<td>' + data['eplf_log_all'] + '</td>' +
+                                `<td class="${darkCell1}">` + data['zd_log_all'] + '</td>' +
+                                `<td class="${darkCell1}">` + data['eplf_log_not_faulty'] + '</td>' +
+                                '<td>' + data['eplf_log_faulty'] + '</td>' +
+                                `<td class="${darkCell2}">` + data['eplf_log_validated'] + '</td>' +
+                                `<td class="${darkCell2}">` + data['zd_log_validated'] + '</td>' +
+                            '</tr>';
 
                 // Append the new row to the table body
                 $('#data-table').append(newRow);
@@ -26,9 +37,9 @@ $(document).ready(function() {
             });
     }
 
-    // Run refreshData immediately and then every 1 Minute
+    // Run refreshData immediately and then every half Minute
     refreshData();
-    setInterval(refreshData, 60000);
+    setInterval(refreshData, 30000);
 });
 
 // Function to get the current time in the format HH:MM:SS

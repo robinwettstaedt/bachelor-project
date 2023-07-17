@@ -10,52 +10,66 @@ engine_zd = create_engine('postgresql://postgres:postgres@192.168.0.24:5432/db')
 
 @app.route('/')
 def home():
-    try:
-        with engine_eplf.connect() as connection:
-            result_eplf = connection.execute(text("SELECT COUNT(*) FROM Payments"))
-            eplf_payment_data = result_eplf.fetchone()[0]
+    return render_template('index.html')
 
-        with engine_zd.connect() as connection:
-            result_zd = connection.execute(text("SELECT COUNT(*) FROM Payments"))
-            zd_payment_data = result_zd.fetchone()[0]
 
-        with engine_eplf.connect() as connection:
-            result_eplf = connection.execute(text("SELECT COUNT(*) FROM Log"))
-            eplf_log_data = result_eplf.fetchone()[0]
-
-        with engine_zd.connect() as connection:
-            result_zd = connection.execute(text("SELECT COUNT(*) FROM Log"))
-            zd_log_data = result_zd.fetchone()[0]
-
-        return render_template('index.html', eplf_payment_data=eplf_payment_data, zd_payment_data=zd_payment_data, eplf_log_data=eplf_log_data, zd_log_data=zd_log_data)
-    except Exception as e:
-        return str(e)
 
 @app.route('/update_data')
 def update_data():
+
     try:
+        # EPLF Payments (all)
         with engine_eplf.connect() as connection:
             result_eplf = connection.execute(text("SELECT COUNT(*) FROM Payments"))
-            eplf_payment_data = result_eplf.fetchone()[0]
+            eplf_payment_all = result_eplf.fetchone()[0]
 
+        # ZD Payments (all)
         with engine_zd.connect() as connection:
             result_zd = connection.execute(text("SELECT COUNT(*) FROM Payments"))
-            zd_payment_data = result_zd.fetchone()[0]
+            zd_payment_all = result_zd.fetchone()[0]
 
+        # EPLF Log (all)
         with engine_eplf.connect() as connection:
             result_eplf = connection.execute(text("SELECT COUNT(*) FROM Log"))
-            eplf_log_data = result_eplf.fetchone()[0]
+            eplf_log_all = result_eplf.fetchone()[0]
 
+        # ZD Log (all)
         with engine_zd.connect() as connection:
             result_zd = connection.execute(text("SELECT COUNT(*) FROM Log"))
-            zd_log_data = result_zd.fetchone()[0]
+            zd_log_all = result_zd.fetchone()[0]
+
+        # EPLF Log (valid IBAN, not faulty)
+        with engine_eplf.connect() as connection:
+            result_eplf = connection.execute(text("SELECT COUNT(*) FROM Log WHERE faulty='False'"))
+            eplf_log_not_faulty = result_eplf.fetchone()[0]
+
+        # EPLF Log (invalid IBAN, faulty)
+        with engine_eplf.connect() as connection:
+            result_eplf = connection.execute(text("SELECT COUNT(*) FROM Log WHERE faulty='True'"))
+            eplf_log_faulty = result_eplf.fetchone()[0]
+
+
+        # EPLF Log (validated, not faulty)
+        with engine_eplf.connect() as connection:
+            result_eplf = connection.execute(text("SELECT COUNT(*) FROM Log WHERE faulty='False' AND validated='True'"))
+            eplf_log_validated = result_eplf.fetchone()[0]
+
+        # ZD Log (validated)
+        with engine_zd.connect() as connection:
+            result_zd = connection.execute(text("SELECT COUNT(*) FROM Log WHERE validated='True'"))
+            zd_log_validated = result_zd.fetchone()[0]
 
         return jsonify({
-            'eplf_payment_data': eplf_payment_data,
-            'zd_payment_data': zd_payment_data,
-            'eplf_log_data': eplf_log_data,
-            'zd_log_data': zd_log_data
+                        'eplf_payment_all':eplf_payment_all,
+                        'zd_payment_all':zd_payment_all,
+                        'eplf_log_all':eplf_log_all,
+                        'zd_log_all':zd_log_all,
+                        'eplf_log_not_faulty': eplf_log_not_faulty,
+                        'eplf_log_faulty':eplf_log_faulty,
+                        'eplf_log_validated':eplf_log_validated,
+                        'zd_log_validated':zd_log_validated
         })
+
     except Exception as e:
         return str(e)
 

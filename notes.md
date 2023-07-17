@@ -3,6 +3,13 @@
 - try out concept1 with more containers (multiple eplfs)
 
 
+### TODO:
+
+- Anleitung README
+
+- IBAN Validierung im ZD
+
+- (evtl.) Interface ohne direkten DB Zugriff
 
 
 
@@ -11,17 +18,18 @@
 - adjust the timings of validaton and stuff to have some time were the data is actually consistent
 already adjusted:
 	C2:
-		- republish.py (5 min)
+		- republish.py (2 min)
 		- validator listen.py (45 secs)
 		- validator publish.py (1 min)
 		- zd listen.py (ms reduziert, (0.001, 0.005), 0.05)
+		- eplf publish.py (5 min)
 
-- work on the interface, colored rows, new column
+
 
 
 #### Interface Cols
 
-EPLF Payments (all)  |  ZD Payments (all)  |  EPLF Log (all)  |  ZD Log (all)  |  EPLF Log (validated, not faulty)  | ZD Log (validated)
+EPLF Payments (all)  |  ZD Payments (all)  |  EPLF Log (all)  |   ZD Log (all)  |  EPLF Log (invalid IBAN)  |   EPLF Log (validated, not faulty)  | ZD Log (validated)
 
 Wann consistent?:
 	- wenn alle die losgeschickt wurden auch korrekt verarbeitet wurden
