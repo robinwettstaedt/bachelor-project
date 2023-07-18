@@ -54,7 +54,7 @@ def is_iban_valid(iban):
 
 def insert_into_payments(conn, data):
     successfully_inserted_data = []
-    invalid_iban_counter = 0
+    invalid_iban_data = []
     system_error_counter = 0
     received_invalid_data_counter = 0
     received_duplicate_data_counter = 0
@@ -83,7 +83,7 @@ def insert_into_payments(conn, data):
 
             # Validate the IBAN
             if not is_iban_valid(item[2]):
-                invalid_iban_counter += 1
+                invalid_iban_data.append(item)
                 continue
 
             try:
@@ -112,12 +112,12 @@ def insert_into_payments(conn, data):
         # Validate the data item
         if len(data) < 4:
             received_invalid_data_counter += 1
-            return successfully_inserted_data
+            return successfully_inserted_data, invalid_iban_data
 
         # Validate the IBAN
         if not is_iban_valid(data[2]):
-            invalid_iban_counter += 1
-            return successfully_inserted_data
+            invalid_iban_data.append(data)
+            return successfully_inserted_data, invalid_iban_data
 
         # Insert single record into database
         try:
@@ -127,7 +127,7 @@ def insert_into_payments(conn, data):
             # Random 0.1% chance to skip insertion (simulating an internal error)
             if random.random() < 0.001:
                 system_error_counter += 1
-                return successfully_inserted_data
+                return successfully_inserted_data, invalid_iban_data
 
             cursor.execute("INSERT INTO Payments (id, amount, iban, payment_date) VALUES (%s, %s, %s, %s)", (data[0], data[1], data[2], data[3]))
             conn.commit()
@@ -141,37 +141,60 @@ def insert_into_payments(conn, data):
     # Print status
     if isinstance(data, list):
         print(f"Successfully inserted {len(successfully_inserted_data)} out of the {len(data)} records received into the 'Payments' table of the ZD database.")
-        print(f"Invalid IBANs: {invalid_iban_counter}")
+        print(f"Invalid IBANs: {len(invalid_iban_data)}")
         print(f"System errors: {system_error_counter}")
         print(f"Invalid data: {received_invalid_data_counter}")
         print(f"Duplicate data: {received_duplicate_data_counter}")
     else:
         print(f"Successfully inserted the only received record with id {data[0]} into the 'Payments' table of the ZD database.")
-        print(f"Invalid IBANs: {invalid_iban_counter}")
+        print(f"Invalid IBANs: {len(invalid_iban_data)}")
         print(f"System errors: {system_error_counter}")
         print(f"Invalid data: {received_invalid_data_counter}")
         print(f"Duplicate data: {received_duplicate_data_counter}")
 
-    return successfully_inserted_data
+    return successfully_inserted_data, invalid_iban_data
 
 
-def insert_into_log_db(conn, successfully_inserted_data):
+def insert_into_log_db(conn, successfully_inserted_data, invalid_iban_data):
     # Create a database cursor
     cursor = conn.cursor()
-    successfully_inserted_counter = 0
 
     # Insert the successfully inserted data into the 'Log' table of the ZD database
     for item in successfully_inserted_data:
 
         cursor.execute(
-            "INSERT INTO Log (payment_id, iban, validated, inserted, faulty) VALUES (%s, %s, False, now() AT TIME ZONE 'UTC', False)",
-            (item[0], item[2])
+            """
+            INSERT INTO Log (payment_id, iban, validated, inserted)
+            SELECT %s, %s, False, now() AT TIME ZONE 'UTC'
+            WHERE NOT EXISTS (
+                SELECT 1 FROM Log WHERE payment_id = %s
+            )
+            """,
+            (item[0], item[2], item[0])
         )
 
         conn.commit()
-        successfully_inserted_counter += 1
 
-    print(f"Successfully inserted {successfully_inserted_counter} out of the {len(successfully_inserted_data)} records that were inserted into the 'Payments' table, into the 'Log' table of the ZD database.")
+    print(f"Successfully inserted {len(successfully_inserted_data)} valid rows into the 'Log' table of the ZD database.")
+
+    # Insert the invalid IBAN data into the 'Log' table of the ZD database
+    for item in invalid_iban_data:
+
+        cursor.execute(
+            """
+            INSERT INTO InvalidLog (payment_id, iban, validated, inserted)
+            SELECT %s, %s, False, now() AT TIME ZONE 'UTC'
+            WHERE NOT EXISTS (
+                SELECT 1 FROM InvalidLog WHERE payment_id = %s
+            )
+            """,
+            (item[0], item[2], item[0])
+        )
+
+        conn.commit()
+
+
+    print(f"Successfully inserted {len(invalid_iban_data)} rows with invalid IBANs into the 'InvalidLog' table of the ZD database.")
 
 
 
@@ -186,11 +209,11 @@ def on_receive_message(ch, method, properties, body):
     conn = connect_to_db(host='192.168.0.24', dbname='db', user='postgres', password='postgres')
 
     # Insert data into payments DB
-    successfully_inserted_data = insert_into_payments(conn, data)
+    successfully_inserted_data, invalid_iban_data = insert_into_payments(conn, data)
 
     # Insert successfully inserted data into the 'Log' table of the ZD database
-    if successfully_inserted_data:
-        insert_into_log_db(conn, successfully_inserted_data)
+    if successfully_inserted_data or invalid_iban_data:
+        insert_into_log_db(conn, successfully_inserted_data, invalid_iban_data)
 
     # Acknowledge message so it can be removed from the queue
     ch.basic_ack(delivery_tag=method.delivery_tag)

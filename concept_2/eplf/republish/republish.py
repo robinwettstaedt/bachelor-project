@@ -45,7 +45,6 @@ def get_data_from_log(conn):
         SELECT *
         FROM Log
         WHERE validated = false
-        AND faulty = false
     """)
 
     return cursor.fetchall()
@@ -152,7 +151,7 @@ def main():
             print(f"Sent {sent_counter} rows in total \n")
 
         # Wait 1 minute before sending the next message
-        time.sleep(60)
+        time.sleep(120)
 
 
 if __name__ == '__main__':

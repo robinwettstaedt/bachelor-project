@@ -11,7 +11,14 @@ CREATE TABLE Log (
     validated BOOLEAN,
     inserted TIMESTAMP,
     iban TEXT NOT NULL,
-    faulty BOOLEAN,
     FOREIGN KEY (payment_id) REFERENCES Payments(id)
+);
+
+CREATE TABLE InvalidLog (
+    id SERIAL PRIMARY KEY,
+    payment_id INTEGER,
+    validated BOOLEAN,
+    inserted TIMESTAMP,
+    iban TEXT NOT NULL
 );
 

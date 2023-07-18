@@ -50,7 +50,7 @@ EPLF Payments (all)  |  ZD Payments (all)  |  EPLF Log (all)  |   ZD Log (all)  
 
 Wann consistent?:
 	- wenn alle die losgeschickt wurden auch korrekt verarbeitet wurden
-	- Count EPLF Log (not faulty) == Count ZD Log    &&     alle non-faulty sind validated
+	- Count ZD Payments == Count EPLF Log (not faulty) == Count ZD Log    &&     alle non-faulty sind validated
 
 
 

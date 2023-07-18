@@ -12,7 +12,12 @@ $(document).ready(function() {
                 // Now 'data' is the actual JSON data
 
                 // Determine the row class based on the data
-                var rowClass = (data['eplf_log_validated'] == data['zd_log_validated'] && data['zd_log_all'] == data['eplf_log_not_faulty']) ? 'green-row' : 'red-row';
+                var zd_log_combined = data['zd_log_all'] + data['zd_invalid_log_all'];
+
+                var isLogAmountEqual = (data['eplf_log_all'] == zd_log_combined);
+                var paymentAndValidatedAreEqual = (data['zd_payment_all'] === data['eplf_log_validated']) && (data['eplf_log_validated'] === data['zd_log_validated']);
+
+                var rowClass = (paymentAndValidatedAreEqual && isLogAmountEqual) ? 'green-row' : 'red-row';
                 var darkCell1 = (rowClass == 'green-row') ? 'dark-cell-1-green' : 'dark-cell-1-red';
                 var darkCell2 = (rowClass == 'green-row') ? 'dark-cell-2-green' : 'dark-cell-2-red';
 
@@ -21,10 +26,9 @@ $(document).ready(function() {
                                 '<td>' + getCurrentTime() + '</td>' +
                                 '<td>' + data['eplf_payment_all'] + '</td>' +
                                 '<td>' + data['zd_payment_all'] + '</td>' +
-                                // '<td>' + data['eplf_log_all'] + '</td>' +
+                                `<td class="${darkCell1}">` + data['eplf_log_all'] + '</td>' +
                                 `<td class="${darkCell1}">` + data['zd_log_all'] + '</td>' +
-                                `<td class="${darkCell1}">` + data['eplf_log_not_faulty'] + '</td>' +
-                                '<td>' + data['eplf_log_faulty'] + '</td>' +
+                                '<td>' + data['zd_invalid_log_all'] + '</td>' +
                                 `<td class="${darkCell2}">` + data['eplf_log_validated'] + '</td>' +
                                 `<td class="${darkCell2}">` + data['zd_log_validated'] + '</td>' +
                             '</tr>';

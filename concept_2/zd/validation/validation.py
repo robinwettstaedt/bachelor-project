@@ -44,10 +44,9 @@ def get_data_from_log(conn):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT payment_id, validated, iban, faulty
+        SELECT payment_id, validated, iban
         FROM Log
         WHERE validated = false
-        AND faulty = false
     """)
 
     return cursor.fetchall()
