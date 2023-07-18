@@ -48,3 +48,6 @@ docker run --network=containernetwork --name validator-publish -d -p 3010:3000 v
 
 # Start the web interface container
 docker run --network=containernetwork --name interface -d -p 5000:5000 interface:latest
+
+# automatically open the web interface in the default browser
+Start-Process "http://localhost:5000"

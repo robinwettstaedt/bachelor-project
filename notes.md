@@ -5,28 +5,13 @@
 
 ### TODO:
 
-- IBAN Validierung im ZD
+Concept_1:
+- IBAN Validierung im ZD (concept 1)
 
-- (evtl.) Interface ohne direkten DB Zugriff
+Concept_2:
+- ZD listen erweitern: Invalide IBANs direkt an einen Channel 'im Void' senden?
 
-### IBAN im ZD
 
-EPLF:
-- does not know if a date is / was faulty, will never know
-- do not check for iban validity
-- do not have `faulty` field in Log
-- just send to ZD
-
-ZD listen:
-- checks for IBAN validity
-- if not valid:
-	- insert into Log with faulty=True
-	- do not insert into Payments
-	- move the insertion into Log up into the previous function, do both insertions in one place
-
-validator and interface:
-- check validator
-- in interface just change the conditions and queries around
 
 
 
@@ -44,14 +29,10 @@ already adjusted:
 
 
 
-#### Interface Cols
 
-EPLF Payments (all)  |  ZD Payments (all)  |  EPLF Log (all)  |   ZD Log (all)  |  EPLF Log (invalid IBAN)  |   EPLF Log (validated, not faulty)  | ZD Log (validated)
 
-Wann consistent?:
-	- wenn alle die losgeschickt wurden auch korrekt verarbeitet wurden
-	- Count ZD Payments == Count EPLF Log (not faulty) == Count ZD Log    &&     alle non-faulty sind validated
 
+---
 
 
 ### Ablauf
