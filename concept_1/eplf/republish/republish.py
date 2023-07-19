@@ -64,8 +64,8 @@ def filter_log_data(data) -> list:
         # calculate the time difference between now and the time the row was inserted
         time_diff = (datetime.datetime.utcnow() - inserted).total_seconds()
 
-        # if the time difference is greater than 20 minutes, add the row to the filtered data
-        if time_diff > 1200:
+        # if the time difference is greater than 5 minutes, add the row to the filtered data
+        if time_diff > 300:
             filtered_data.append((payment_id, iban, validated, inserted))
 
     return filtered_data
@@ -145,8 +145,8 @@ def main():
             sent_counter += len(payments_data)
             print(f"Sent {sent_counter} rows in total \n")
 
-        # Wait 10 minutes before sending the next message
-        time.sleep(600)
+        # Wait 1 minute before sending the next message
+        time.sleep(60)
 
 
 if __name__ == '__main__':

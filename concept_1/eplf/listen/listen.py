@@ -33,19 +33,38 @@ def connect_to_db(host, dbname, user, password, port=5432):
 
 
 def update_db(data, cursor):
-    # Iterate over the data
-    for row in data:
-        # Get the payment_id from the row
-        payment_id = row[0]
+    type_of_data = data["type"]
+    data = data["data"]
 
-        # Update the validated field in the 'Log' table where the payment_id matches
-        cursor.execute(
-            "UPDATE Log SET validated = True WHERE payment_id = %s",
-            (payment_id,)
-        )
+    # check the received dictionary for the type of data
+    if type_of_data == "successful_insertion":
+
+        # Iterate over the data
+        for row in data:
+            # Get the payment_id from the row
+            payment_id = row[0]
+
+            # Update the validated field in the 'Log' table where the payment_id matches
+            cursor.execute(
+                "UPDATE Log SET validated = True WHERE payment_id = %s",
+                (payment_id,)
+            )
+
+    elif type_of_data == "invalid_iban":
+
+        # Iterate over the data
+        for row in data:
+            # Get the payment_id from the row
+            payment_id = row[0]
+
+            # update all the rows with invalid IBANs
+            cursor.execute(
+                "UPDATE Log SET faulty = True WHERE payment_id = %s",
+                (payment_id,)
+            )
 
 
-    print(f"Updated {len(data)} records in the 'Log' table of the EPLF database to be validated. \n")
+    print(f"Updated {len(data)} records in the 'Log' table of the EPLF database to be validated or faulty. \n")
 
 
 

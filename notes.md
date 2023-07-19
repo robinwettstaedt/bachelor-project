@@ -27,6 +27,9 @@ already adjusted:
 		- eplf publish.py (5 min)
 
 
+	C1:
+		- publish.py (10 min)
+		- republish.py (1 min, 5 min old)
 
 
 

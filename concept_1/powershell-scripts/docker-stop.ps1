@@ -39,6 +39,13 @@ docker stop mq
 docker rm mq
 
 
+# ------------- Stop and remove the web interface containers  ------------- #
+
+docker stop interface
+docker rm interface
+
+
+
 # ------------- Remove the Docker network ------------- #
 
 docker network rm containernetwork

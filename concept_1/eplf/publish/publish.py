@@ -56,57 +56,24 @@ def get_data_from_db(conn):
     return cursor.fetchall()
 
 
-def is_iban_valid(iban):
-    # Returns True if the IBAN is valid, False otherwise
-    try:
-        iban = IBAN(iban)
-        return True
-    except InvalidChecksumDigits:
-        return False
-
-
-def filter_data_for_invalid_iban(data):
-    # This function filters the data for rows with invalid IBANs
-    filtered_data = []
-
-    for row in data:
-        iban = row[2]
-
-        if is_iban_valid(iban):
-            filtered_data.append(row)
-
-    return filtered_data
-
-
 def write_data_to_db(conn, data):
     # This function writes the data to the 'Log' table in the database
     # It checks beforehand if the IBAN is valid, and if not, it sets the 'faulty' column to True
-    fault_count = 0
 
     cursor = conn.cursor()
 
     for row in data:
 
-        # Validate the IBAN
-        if not is_iban_valid(row[2]):
-            fault_count += 1
+        payment_id = row[0]
+        iban = row[2]
 
-            payment_id = row[0]
-            cursor.execute(
-                "INSERT INTO Log (payment_id, iban, validated, inserted, faulty) VALUES (%s, %s, False, now() AT TIME ZONE 'UTC', True)",
-                (payment_id, row[2])  # row[2] is iban in the selected data
-            )
-
-        else:
-
-            payment_id = row[0]
-            cursor.execute(
-                "INSERT INTO Log (payment_id, iban, validated, inserted, faulty) VALUES (%s, %s, False, now() AT TIME ZONE 'UTC', False)",
-                (payment_id, row[2])  # row[2] is iban in the selected data
-            )
+        cursor.execute(
+            "INSERT INTO Log (payment_id, iban, validated, inserted, faulty) VALUES (%s, %s, False, now() AT TIME ZONE 'UTC', False)",
+            (payment_id, iban)
+        )
 
     conn.commit()
-    print(f"Successfully added {len(data)} rows to the Log table of which {fault_count} had invalid IBANs")
+    print(f"Successfully added {len(data)} rows to the Log Table of the EPLF database.")
 
 
 
@@ -135,17 +102,14 @@ def main():
         # Write the IDs of the data that was published into the 'Log' table in the database
         write_data_to_db(conn, data)
 
-        # Filter out the invalid IBANs
-        filtered_data = filter_data_for_invalid_iban(data)
-
         # Convert all data to a JSON string and send as a single message
-        message = json.dumps(filtered_data)
+        message = json.dumps(data)
 
         # Publish the message to the queue.
         channel.basic_publish(exchange='', routing_key='data', body=message)
 
         # Increment the counter.
-        sent_counter += len(filtered_data)
+        sent_counter += len(data)
         print(f"Sent {sent_counter} rows in total\n")
 
         # Wait 10 minutes before sending the next message.

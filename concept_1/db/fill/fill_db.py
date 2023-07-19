@@ -28,7 +28,7 @@ conn = psycopg2.connect(
 # Open a cursor to perform database operations
 cur = conn.cursor()
 
-for i in range(500000):  # Generate 500,000 rows
+for i in range(30000):  # Generate 500,000 rows
     amount = round(random.uniform(1, 1000), 2)  # Random amount between 1 and 1000 with 2 decimal places
     payment_date = fake.date_between(start_date='-1y', end_date='today')  # Random date within last year
 

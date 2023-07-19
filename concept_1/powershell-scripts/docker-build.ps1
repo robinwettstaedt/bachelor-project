@@ -21,3 +21,7 @@ docker build --no-cache --rm -f "..\db\zd\Dockerfile" -t zd-db:latest "..\..\"
 
 # build the zd service image
 docker build --no-cache --rm -f "..\zd\Dockerfile" -t zd:latest "..\..\"
+
+# build the web interface
+# docker build --no-cache --rm -f "..\interface\Dockerfile" -t interface-base:latest "..\..\"
+docker build --no-cache --rm -f "..\interface\Dockerfile2" -t interface:latest "..\..\"

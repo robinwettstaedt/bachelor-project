@@ -39,3 +39,10 @@ Start-Sleep -Seconds 30
 docker run --network=containernetwork --name zd -d -p 3005:3000 zd:latest
 docker run --network=containernetwork --name zd2 -d -p 3006:3000 zd:latest
 docker run --network=containernetwork --name zd3 -d -p 3007:3000 zd:latest
+
+
+# Start the web interface container
+docker run --network=containernetwork --name interface -d -p 5000:5000 interface:latest
+
+# automatically open the web interface in the default browser
+Start-Process "http://localhost:5000"
