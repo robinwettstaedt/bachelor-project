@@ -41,9 +41,9 @@ $(document).ready(function() {
             });
     }
 
-    // Run refreshData immediately and then every half Minute
+    // Run refreshData immediately and then every minute
     refreshData();
-    setInterval(refreshData, 30000);
+    setInterval(refreshData, 60000);
 });
 
 // Function to get the current time in the format HH:MM:SS

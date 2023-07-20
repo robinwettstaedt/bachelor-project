@@ -10,6 +10,8 @@ multiple zds are ok
 
 ### TODO:
 
+- Linux testen
+
 Both:
 - Comments, Code structure, file doc strings
 - Ablauf in notes.md
@@ -33,12 +35,14 @@ C2:
 	- validator listen.py (30 secs)
 	- validator publish.py (1 min)
 	- zd listen.py (5-25ms: 95%, 50ms: 5%)
+	- interface: 1 min
 
 
 C1:
 	- eplf publish.py (10 min)
 	- eplf republish.py (1 min, 2 min old)
 	- zd listen.py (5-25ms: 95%, 50ms: 5%)
+	- interface: 1 min
 
 
 
