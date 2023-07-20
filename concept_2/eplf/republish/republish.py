@@ -151,7 +151,7 @@ def main():
             print(f"Sent {sent_counter} rows in total \n")
 
         # Wait 1 minute before sending the next message
-        time.sleep(120)
+        time.sleep(60)
 
 
 if __name__ == '__main__':

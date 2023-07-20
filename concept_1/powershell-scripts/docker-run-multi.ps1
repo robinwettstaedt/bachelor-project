@@ -49,8 +49,10 @@ Start-Process "http://localhost:5000"
 docker run --network=containernetwork --name eplf-publish -d -p 3001:3000 eplf-publish:latest
 
 docker run --network=containernetwork --name eplf-listen -d -p 3003:3000 eplf-listen:latest
+docker run --network=containernetwork --name eplf-listen-2 -d -p 5003:3000 eplf-listen:latest
 
 docker run --network=containernetwork --name eplf-republish -d -p 3002:3000 eplf-republish:latest
+docker run --network=containernetwork --name eplf-republish-2 -d -p 5002:3000 eplf-republish:latest
 
 
 
@@ -59,3 +61,5 @@ docker run --network=containernetwork --name eplf-republish -d -p 3002:3000 eplf
 docker run --network=containernetwork --name zd -d -p 3005:3000 zd:latest
 docker run --network=containernetwork --name zd2 -d -p 3006:3000 zd:latest
 docker run --network=containernetwork --name zd3 -d -p 3007:3000 zd:latest
+
+

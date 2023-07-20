@@ -20,7 +20,7 @@ Start-Sleep -Seconds 10
 docker run --network=containernetwork --name fill -d -p 4000:3000 fill:latest
 
 # wait for the database to be filled
-Start-Sleep -Seconds 120
+Start-Sleep -Seconds 30
 
 # Start the EPLF containers
 docker run --network=containernetwork --name eplf-publish -d -p 3001:3000 eplf-publish:latest

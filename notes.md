@@ -1,35 +1,44 @@
 ### Things to change:
 
 - try out concept1 with more containers (multiple eplfs)
+multiple eplf-publish containers result in more data per 10 minutes sent to the zd, therefore no good
+multiple zds are ok
+
+
+- try out concept2 with more containers?
 
 
 ### TODO:
 
+Both:
+- Comments, Code structure, file doc strings
+- Ablauf in notes.md
+
 Concept_1:
-- IBAN Validierung im ZD (concept 1)
+
 
 Concept_2:
-- ZD listen erweitern: Invalide IBANs direkt an einen Channel 'im Void' senden?
+- docker run anpassen wie in concept1
 
 
 
+---
 
 
-### Doing right now
+### Timings
 
-- adjust the timings of validaton and stuff to have some time were the data is actually (in)consistent
-already adjusted:
-	C2:
-		- republish.py (2 min)
-		- validator listen.py (45 secs)
-		- validator publish.py (1 min)
-		- zd listen.py (ms reduziert, (0.001, 0.005), 0.05)
-		- eplf publish.py (5 min)
+C2:
+	- eplf publish.py (10 min)
+	- eplf republish.py (2 min)
+	- validator listen.py (30 secs)
+	- validator publish.py (1 min)
+	- zd listen.py (5-25ms: 95%, 50ms: 5%)
 
 
-	C1:
-		- publish.py (10 min)
-		- republish.py (1 min, 5 min old)
+C1:
+	- eplf publish.py (10 min)
+	- eplf republish.py (1 min, 2 min old)
+	- zd listen.py (5-25ms: 95%, 50ms: 5%)
 
 
 
@@ -51,14 +60,16 @@ EPLF publish.py:
 
 - alle 10 min werden 1000-10000 Reihen aus der 'Payments' Tabelle der EPLF DB, die noch nicht in der 'Log' Tabelle sind, herausgeholt
 - die Daten werden in die 'Log' Tabelle eingetragen
-	- wenn IBAN korrekt, dann mit faulty=False
-	- wenn IBAN inkorrekt, dann mit faulty=True
-	- somit kann sich ein weiterer Service oder Angestellter die "faulty" Buchungen kuemmern
-- die Daten mit korrekten IBANs werden an den `data` Kanal der MQ geschickt, um vom ZD (listen.py) empfangen zu werden
+- die Daten werden an den `data` Kanal der MQ geschickt, um vom ZD (listen.py) empfangen zu werden
 
 
 ZD listen.py:
+- die Nachricht wird aus dem `data` Kanal der MQ entnommen
+- jedes Datum wird auf die Validitaet seiner IBAN geprueft
 
+- wenn IBAN korrekt, dann mit faulty=False
+- wenn IBAN inkorrekt, dann mit faulty=True
+- somit kann sich ein weiterer Service oder Angestellter die "faulty" Buchungen kuemmern
 
 
 EPLF listen.py:

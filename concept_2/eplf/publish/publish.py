@@ -84,7 +84,7 @@ def main():
     conn = connect_to_db(host='192.168.0.23', dbname='db', user='postgres', password='postgres')
 
     # Provide authentication for the mq
-    credentials = pika.PlainCredentials('rabbit', 'rabbit')
+credentials = pika.PlainCredentials('rabbit', 'rabbit')
 
     # Creating the connection to RabbitMQ
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.0.22', credentials=credentials, heartbeat=65535))

@@ -64,8 +64,8 @@ def filter_log_data(data) -> list:
         # calculate the time difference between now and the time the row was inserted
         time_diff = (datetime.datetime.utcnow() - inserted).total_seconds()
 
-        # if the time difference is greater than 5 minutes, add the row to the filtered data
-        if time_diff > 300:
+        # if the time difference is greater than 2 minutes, add the row to the filtered data
+        if time_diff > 120:
             filtered_data.append((payment_id, iban, validated, inserted))
 
     return filtered_data
@@ -81,19 +81,24 @@ def get_data_from_payments(conn, log_data):
 
     if len(log_data) == 1:
         # If there's only one row, doing the standard way will result in a syntax error within the SQL query
-        ids = []
-        ids.append(log_data[0][0])
+        id = log_data[0][0]
+
+        cursor.execute(f"""
+                        SELECT id, amount, iban, TO_CHAR(payment_date,'YYYY-MM-DD') as payment_date
+                        FROM Payments
+                        WHERE id = {id}
+                    """)
 
     else:
         # Build the tuple of ids
         ids = tuple(row[0] for row in log_data)
 
 
-    cursor.execute(f"""
-                    SELECT id, amount, iban, TO_CHAR(payment_date,'YYYY-MM-DD') as payment_date
-                    FROM Payments
-                    WHERE id IN {ids}
-                """)
+        cursor.execute(f"""
+                        SELECT id, amount, iban, TO_CHAR(payment_date,'YYYY-MM-DD') as payment_date
+                        FROM Payments
+                        WHERE id IN {ids}
+                    """)
 
     return cursor.fetchall()
 
