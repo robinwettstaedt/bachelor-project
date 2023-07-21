@@ -66,7 +66,7 @@ Windows:
 - Docker Desktop
 
 Linux:
-- (tested on Ubuntu 20.04)
+- (tested on Ubuntu 20.04.06 LTS)
 - Docker
 
 
@@ -98,9 +98,9 @@ cd .\powershell-scripts\
 .\docker-full-restart.ps1
 ```
 
-The images will be built and the containers will start. This should take around 3-4 minutes, as the databases get filled with random data.
+The images will be built and the containers will start. This should take around 3-4 minutes, as the images need to be built and the databases get filled with random data.
 
-The logs of the containers can be easily viewed within Docker Desktop and the `interface` container will provide a table overview of the current state of the databases on [localhost:5000](http://localhost:5000/).
+The logs of the containers can be easily viewed within Docker Desktop and the `interface` container will provide a web interface with a table overview of the current state of the databases on [localhost:5000](http://localhost:5000/).
 
 
 <br>
@@ -128,8 +128,41 @@ Executes the 3 previous scripts in the order they are shown here.
 
 ## How to start the simulated Environment (Linux)
 
-# TODO:
-- test
+1. Open the project in your shell.
+2. Change directories in the concept of choice:
+
+```
+cd ./concept_1/
+```
+
+or
+
+```
+cd ./concept_2/
+```
+3. Change directories into the `bash-scripts` directory
+```
+cd ./bash-scripts/
+```
+
+4. It may be required to make the scripts exectutable like so:
+
+```
+chmod +x docker-build.sh
+chmod +x docker-full-restart.sh
+chmod +x docker-run.sh
+chmod +x docker-stop.sh
+```
+
+5. For convenience, start the `docker-full-restart.sh` script. For a more detailed explanation on the scripts, please see below.
+
+```
+sudo ./docker-full-restart.sh
+```
+
+The images will be built and the containers will start. This should take around 3-4 minutes, as the images need to be built and the databases get filled with random data.
+
+The logs of the containers can be viewed via the `sudo docker logs <containername>` command and the `interface` container will provide a web interface with a table overview of the current state of the databases on [localhost:5000](http://localhost:5000/).
 
 
 

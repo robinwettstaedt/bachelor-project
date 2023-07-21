@@ -25,6 +25,9 @@ docker rm zd-listen
 docker stop zd-listen2
 docker rm zd-listen2
 
+docker stop zd-listen3
+docker rm zd-listen3
+
 docker stop zd-validation
 docker rm zd-validation
 

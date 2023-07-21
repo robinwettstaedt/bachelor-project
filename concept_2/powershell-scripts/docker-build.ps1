@@ -32,5 +32,5 @@ docker build --no-cache --rm -f "..\validator\publish\Dockerfile" -t validator-p
 
 
 # # build the web interface
-# docker build --no-cache --rm -f "..\interface\Dockerfile" -t interface-base:latest "..\..\"
+docker build --no-cache --rm -f "..\interface\Dockerfile" -t interface-base:latest "..\..\"
 docker build --no-cache --rm -f "..\interface\Dockerfile2" -t interface:latest "..\..\"

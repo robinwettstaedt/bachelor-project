@@ -41,7 +41,7 @@ sleep 30
 docker run --network=containernetwork --name interface -d -p 5000:5000 interface:latest
 
 # automatically open the web interface in the default browser
-xdg-open "http://localhost:5000"
+# xdg-open "http://localhost:5000"
 
 
 

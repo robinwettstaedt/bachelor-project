@@ -18,19 +18,23 @@ $(document).ready(function() {
                 var paymentAndValidatedAreEqual = (data['zd_payment_all'] === data['eplf_log_validated']) && (data['eplf_log_validated'] === data['zd_log_validated']);
 
                 var rowClass = (paymentAndValidatedAreEqual && isLogAmountEqual) ? 'green-row' : 'red-row';
-                var darkCell1 = (rowClass == 'green-row') ? 'dark-cell-1-green' : 'dark-cell-1-red';
-                var darkCell2 = (rowClass == 'green-row') ? 'dark-cell-2-green' : 'dark-cell-2-red';
+                // var darkCell1 = (rowClass == 'green-row') ? 'dark-cell-1-green' : 'dark-cell-1-red';
+                // var darkCell2 = (rowClass == 'green-row') ? 'dark-cell-2-green' : 'dark-cell-2-red';
 
                 // Create a new row with the updated data and the determined class
                 var newRow = '<tr class="' + rowClass + '">' +
                                 '<td>' + getCurrentTime() + '</td>' +
                                 '<td>' + data['eplf_payment_all'] + '</td>' +
                                 '<td>' + data['zd_payment_all'] + '</td>' +
-                                `<td class="${darkCell1}">` + data['eplf_log_all'] + '</td>' +
-                                `<td class="${darkCell1}">` + data['zd_log_all'] + '</td>' +
+                                // `<td class="${darkCell1}">` + data['eplf_log_all'] + '</td>' +
+                                // `<td class="${darkCell1}">` + data['zd_log_all'] + '</td>' +
+                                `<td>` + data['eplf_log_all'] + '</td>' +
+                                `<td>` + data['zd_log_all'] + '</td>' +
                                 '<td>' + data['zd_invalid_log_all'] + '</td>' +
-                                `<td class="${darkCell2}">` + data['eplf_log_validated'] + '</td>' +
-                                `<td class="${darkCell2}">` + data['zd_log_validated'] + '</td>' +
+                                // `<td class="${darkCell2}">` + data['eplf_log_validated'] + '</td>' +
+                                // `<td class="${darkCell2}">` + data['zd_log_validated'] + '</td>' +
+                                `<td>` + data['eplf_log_validated'] + '</td>' +
+                                `<td>` + data['zd_log_validated'] + '</td>' +
                             '</tr>';
 
                 // Append the new row to the table body

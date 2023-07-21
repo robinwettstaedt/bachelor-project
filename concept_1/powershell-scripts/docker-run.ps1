@@ -41,11 +41,13 @@ docker run --network=containernetwork --name interface -d -p 5000:5000 interface
 # automatically open the web interface in the default browser
 Start-Process "http://localhost:5000"
 
+# wait for the interface to load
+Start-Sleep -Seconds 10
+
 
 
 # ------------- EPLF ------------- #
 
-# Start the EPLF applications
 docker run --network=containernetwork --name eplf-publish -d -p 3001:3000 eplf-publish:latest
 
 docker run --network=containernetwork --name eplf-listen -d -p 3003:3000 eplf-listen:latest
