@@ -1,6 +1,5 @@
 ### Things to change:
 
-- try out concept1 with more containers (multiple eplfs)
 multiple eplf-publish containers result in more data per 10 minutes sent to the zd, therefore no good
 multiple zds are ok
 

@@ -17,8 +17,6 @@ $(document).ready(function() {
                 var paymentAndValidatedAreEqual = (data['zd_payment_all'] === data['eplf_log_validated']);
 
                 var rowClass = sentIsReceived && paymentAndValidatedAreEqual ? 'green-row' : 'red-row';
-                // var darkCell1 = (rowClass == 'green-row') ? 'dark-cell-1-green' : 'dark-cell-1-red';
-                // var darkCell2 = (rowClass == 'green-row') ? 'dark-cell-2-green' : 'dark-cell-2-red';
 
                 // Create a new row with the updated data and the determined class
                 var newRow = '<tr class="' + rowClass + '">' +
@@ -28,8 +26,6 @@ $(document).ready(function() {
                                 '<td>' + data['eplf_log_faulty'] + '</td>' +
                                 `<td>` + data['eplf_log_validated'] + '</td>' +
                                 `<td>` + data['zd_payment_all'] + '</td>' +
-                                // `<td class="${darkCell1}">` + data['eplf_log_validated'] + '</td>' +
-                                // `<td class="${darkCell1}">` + data['zd_payment_all'] + '</td>' +
                             '</tr>';
 
                 // Append the new row to the table body
