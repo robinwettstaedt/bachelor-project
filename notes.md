@@ -12,14 +12,6 @@ necesary for the MQ to have the feature to only deliver a message to one subscri
 
 Both:
 - Comments, Code structure, file doc strings
-- Ablauf in notes.md
-
-
-Concept_1:
-
-
-Concept_2:
-
 
 
 ---
@@ -28,19 +20,19 @@ Concept_2:
 ### Timings
 
 C2:
-	- eplf publish.py (10 min)
-	- eplf republish.py (2 min)
-	- validator listen.py (30 secs)
-	- validator publish.py (1 min)
-	- zd listen.py (5-25ms: 95%, 50ms: 5%)
-	- interface: 1 min
+- eplf publish.py (10 min)
+- eplf republish.py (2 min)
+- validator listen.py (30 secs)
+- validator publish.py (1 min)
+- zd listen.py (5-25ms: 95%, 50ms: 5%)
+- interface: 1 min
 
 
 C1:
-	- eplf publish.py (10 min)
-	- eplf republish.py (1 min, 2 min old)
-	- zd listen.py (5-25ms: 95%, 50ms: 5%)
-	- interface: 1 min
+- eplf publish.py (10 min)
+- eplf republish.py (1 min, 2 min old)
+- zd listen.py (5-25ms: 95%, 50ms: 5%)
+- interface: 1 min
 
 
 
@@ -100,6 +92,10 @@ Das System ist konsistent wenn alle nachfolgenden Bedingungen stimmen:
 Daten mit invalider IBAN wurden im ZD erkannt und koennen ueber das Feld `faulty` in der `Log` Tabelle der EPLF DB eingesehen werden.
 
 Jedes Mal wenn die Verarbeitung einer Nachricht abgeschlossen ist, wird der Erhalt dieser mit einem `Acknowledgement` an die MQ bestaetigt.
+
+
+
+---
 
 
 
