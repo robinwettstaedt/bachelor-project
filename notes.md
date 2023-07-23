@@ -1,4 +1,19 @@
-### Things to change:
+### BA:
+
+- klarstellen, dass Interface nur zum Loggen da ist und kein Teil des Systems ist (deshalb direkt auf DBs zugreift)
+
+- technische Umsetzung untescheidet sich von Konzept, daher 2 verschiedene (unteschiedlich detailierte Grafiken)
+
+- zd-listen container koennen wenn gewollt zu hunderten laufen, das aendert nichts. 
+
+- one "dumb" diagram for concept, one detailed one for programming
+
+- wichtig, dass die MQ das Feature hat, eine Nachricht nur an einen Receiver auf einmal zuzustellen
+- + es wird immer erst acknowledged, wenn die Bearbeitung und eventuelle Nachrichten-Sendung abgeschlossen ist
+
+
+
+### Multiple Containers:
 
 multiple eplf-publish containers result in more data per 10 minutes sent to the zd, therefore no good
 multiple zds are ok

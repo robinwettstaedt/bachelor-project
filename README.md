@@ -23,33 +23,47 @@ The goal was to simulate system concepts that were developed in the thesis and t
 
 ## Project Structure
 
-Two concepts were develop as part of the thesis, hence the split into 2 different directories (/concept_1, /concept_2).
+Two concepts were developed as part of the thesis, hence the split into 2 different directories (`/concept_1/`, `/concept_2/`).
 
 Inside each concept directory, the contents are split up into the different domains of each system. To fully understand this, the context of the actual thesis is certainly helpful. Nonetheless, a brief explanation of their contents:
 
+bash-scripts:
+- Contains all the Linux Bash (.sh) scripts needed for interacting with the simulated system (starting, stopping, building the Docker containers)
+
+<br>
+
 db:
 - Contains the Dockerfiles and initialization scripts for the databases.
+
+<br>
 
 eplf:
 - Is one of the two primary services in the simulated system. Its primary responsibility is sending data retrieved from its own database to the ZD (Zahlungsdienst) service.
 - Contains more directories for each of its functions, which contain the Dockerfiles and Python scripts of the resulting container.
 
+<br>
+
 interface:
 - Is a web interface for visualizing the databases data during the running simulation.
 - Contains the Dockerfile(s) and Python/HTML/Javascript scripts needed for the execution of the container.
 
+<br>
+
 mq:
 - Contains the Dockerfile and RabbitMQ configuration file needed for the execution of the message queue container.
+
+<br>
 
 powershell-scripts:
 - Contains all the Windows PowerShell (.ps1) scripts needed for interacting with the simulated system (starting, stopping, building the Docker containers)
 
-bash-scripts:
-- Contains all the Linux Bash (.sh) scripts needed for interacting with the simulated system (starting, stopping, building the Docker containers)
+<br>
 
 validator (only in /concept_2):
 - Is the third service in the simulated system and responsible for validating the data sent between EPLF and ZD.
 - Contains more directories for each of its functions, which contain the Dockerfiles and Python scripts of the resulting container.
+
+<br>
 
 zd:
 - Is one of the two primary services in the simulated system. Its primary responsibility is receiving and processing the data sent by the EPLF (Einnahmeplattform) service.
@@ -59,7 +73,7 @@ zd:
 <br>
 
 
-## Requirements
+## Requirements for running the simulations
 
 Windows:
 - (tested on Windows 10)
