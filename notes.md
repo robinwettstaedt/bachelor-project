@@ -1,15 +1,20 @@
 ### BA:
 
+TODO: - "Log" undso mit "something"=Tabelle ersetzen ueberall
+- stehengeblieben bei Vergliech mit Konzept 1
+
 - klarstellen, dass Interface nur zum Loggen da ist und kein Teil des Systems ist (deshalb direkt auf DBs zugreift)
 
 - technische Umsetzung untescheidet sich von Konzept, daher 2 verschiedene (unteschiedlich detailierte Grafiken)
 
-- zd-listen container koennen wenn gewollt zu hunderten laufen, das aendert nichts. 
+- zd(-listen) container koennen wenn gewollt zu hunderten laufen, das aendert nichts.
 
-- one "dumb" diagram for concept, one detailed one for programming
+- In der technischen Umsetzung wurden Container nicht pro Service (EPLF / DB) verwendet, sondern die Services weiter
+in Funktionsbereiche aufgeteilt
+DAdurch entsteht keine zusaetzliche Kommunikation und die Container sind kleiner und spezifischer in ihren Aufgaben
 
-- wichtig, dass die MQ das Feature hat, eine Nachricht nur an einen Receiver auf einmal zuzustellen
-- + es wird immer erst acknowledged, wenn die Bearbeitung und eventuelle Nachrichten-Sendung abgeschlossen ist
+
+- Beschreibung der Container Struktur wird knapp und sehr technisch. Darin wird nicht erklaert wieso es bestimmte Schritte gibt, sondern rein was technisch in der Simulation passiert. Fuers erklaeren sind die vorherigen Beschreibungen da
 
 
 
@@ -161,7 +166,7 @@ ZD validation.py (leere Nachricht empfangen):
 Validator listen.py
 - die Nachrichten werden aus den `validator-to-eplf` und `validator-to-zd` Kanälen der MQ entnommen
 - die in den Nachrichten enthaltenen Reihen werden gegeneinander verglichen
-- sind die Reihen gleich, sind sie sowohl in der EPLF, als auch in dem ZD vorhanden und wurden validiert
+- sind die Reihen gleich, sind sie sowohl in der EPLF, als auch in dem ZD vorhanden und sollen daher als validiert gekennzeichnet werden
 - Gleiche Reihen werden daher gesammelt und an die `validator-to-eplf` und `validator-to-zd` Kanäle gesendet
 
 
