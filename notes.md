@@ -2,10 +2,6 @@
 
 TODO:
 
-Fragen:
-- Soll ich das ganze system nochmal erklaeren? oder einfach darauf hinweisen, dass eine genaue beschreibung des Codes im Repo zu finden ist?
-
-
 - "noch einmal grafisch dargestellt und alle Schritte technisch erläutert." - wird es? wenn doch nicht, aendern
 
 - Abkuerzungsverzeichnis
@@ -17,10 +13,6 @@ Fragen:
 
 
 - zd(-listen) container koennen wenn gewollt zu hunderten laufen, das aendert nichts.
-
-
-
-- Beschreibung der Container Struktur wird knapp und sehr technisch. Darin wird nicht erklaert wieso es bestimmte Schritte gibt, sondern rein was technisch in der Simulation passiert. Fuers erklaeren sind die vorherigen Beschreibungen da
 
 
 
