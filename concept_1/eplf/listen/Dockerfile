@@ -1,9 +1,9 @@
 # Start from a base Python 3.9 image
 FROM python:3.9-slim-buster
 
-# Set the working directory to /app
 WORKDIR /app
 
+# Set the working directory to /app
 # Add requirements.txt to the image
 COPY ./concept_1/eplf/requirements.txt /app
 

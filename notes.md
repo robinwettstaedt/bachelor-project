@@ -1,17 +1,23 @@
 ### BA:
 
-TODO: - "Log" undso mit "something"=Tabelle ersetzen ueberall
-- stehengeblieben bei Vergliech mit Konzept 1
+TODO:
 
-- klarstellen, dass Interface nur zum Loggen da ist und kein Teil des Systems ist (deshalb direkt auf DBs zugreift)
+Fragen:
+- Soll ich das ganze system nochmal erklaeren? oder einfach darauf hinweisen, dass eine genaue beschreibung des Codes im Repo zu finden ist?
 
-- technische Umsetzung untescheidet sich von Konzept, daher 2 verschiedene (unteschiedlich detailierte Grafiken)
+
+- "noch einmal grafisch dargestellt und alle Schritte technisch erläutert." - wird es? wenn doch nicht, aendern
+
+- Abkuerzungsverzeichnis
+
+- Bild Micro vs mono
+
+- CQRS und Event Sourcing
+- Outbox Pattern
+
 
 - zd(-listen) container koennen wenn gewollt zu hunderten laufen, das aendert nichts.
 
-- In der technischen Umsetzung wurden Container nicht pro Service (EPLF / DB) verwendet, sondern die Services weiter
-in Funktionsbereiche aufgeteilt
-DAdurch entsteht keine zusaetzliche Kommunikation und die Container sind kleiner und spezifischer in ihren Aufgaben
 
 
 - Beschreibung der Container Struktur wird knapp und sehr technisch. Darin wird nicht erklaert wieso es bestimmte Schritte gibt, sondern rein was technisch in der Simulation passiert. Fuers erklaeren sind die vorherigen Beschreibungen da
