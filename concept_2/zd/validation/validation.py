@@ -7,10 +7,10 @@ which can contain data or be empty.
 The script will react the following way:
 
 No data:
-    - triggers it to fetch and send the unvalidated rows in its 'Log' table of the ZD DB back to the validator
+    - triggers it to fetch and send the unvalidated rows in the 'Log' table of the ZD DB back to the validator
 
 Data:
-    - contains that compared and therefore validated rows which are then updated in the 'Log' table of the ZD DB
+    - contains the rows that were compared and validated by the validator service which are then updated in the 'Log' table of the ZD DB
 """
 
 

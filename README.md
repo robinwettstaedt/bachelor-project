@@ -3,7 +3,7 @@
 
 The code contained in this repository is part of the Bachelors Thesis 'Eventual Consistency zwischen (in) Microservices' by Robin Wettstädt, which was overseen by Prof. Dr.-Ing. Piotr Wojciech Dabrowski and M.Sc. André Mai.
 
-The goal was to simulate system concepts that were developed in the thesis and test their validity on a smaller scale.
+The goal was to simulate system concepts that were developed in the thesis and test their validity on a small scale.
 
 
 <br>
@@ -27,45 +27,45 @@ Two concepts were developed as part of the thesis, hence the split into 2 differ
 
 Inside each concept directory, the contents are split up into the different domains of each system. To fully understand this, the context of the actual thesis is certainly helpful. Nonetheless, a brief explanation of their contents:
 
-bash-scripts:
+`bash-scripts`:
 - Contains all the Linux Bash (.sh) scripts needed for interacting with the simulated system (starting, stopping, building the Docker containers)
 
 <br>
 
-db:
+`db`:
 - Contains the Dockerfiles and initialization scripts for the databases.
 
 <br>
 
-eplf:
+`eplf`:
 - Is one of the two primary services in the simulated system. Its primary responsibility is sending data retrieved from its own database to the ZD (Zahlungsdienst) service.
 - Contains more directories for each of its functions, which contain the Dockerfiles and Python scripts of the resulting container.
 
 <br>
 
-interface:
+`interface`:
 - Is a web interface for visualizing the databases data during the running simulation.
 - Contains the Dockerfile(s) and Python/HTML/Javascript scripts needed for the execution of the container.
 
 <br>
 
-mq:
+`mq`:
 - Contains the Dockerfile and RabbitMQ configuration file needed for the execution of the message queue container.
 
 <br>
 
-powershell-scripts:
+`powershell-scripts`:
 - Contains all the Windows PowerShell (.ps1) scripts needed for interacting with the simulated system (starting, stopping, building the Docker containers)
 
 <br>
 
-validator (only in /concept_2):
+`validator (only in /concept_2)`:
 - Is the third service in the simulated system and responsible for validating the data sent between EPLF and ZD.
 - Contains more directories for each of its functions, which contain the Dockerfiles and Python scripts of the resulting container.
 
 <br>
 
-zd:
+`zd`:
 - Is one of the two primary services in the simulated system. Its primary responsibility is receiving and processing the data sent by the EPLF (Einnahmeplattform) service.
 - Contains more directories for each of its functions, which contain the Dockerfiles and Python scripts of the resulting container.
 

@@ -3,11 +3,11 @@ This script listens to the 'data' queue and processes the incoming messages cont
 
 After validating the IBANs, it inserts the received data into the 'Payments' table of the ZD database.
 
-The insertion has a random delay between 10ms and 100ms to simulate a real-world scenario.
+The insertion has a random delay between 5ms and 50ms to simulate a real-world scenario.
 
 There is also a 0.01% chance that the insertion is skipped to simulate a system error.
 This will result in the payment not being sent back to the EPLF-listen container for validation,
-which will trigger the EPLF-republish container to republish the payment data to the ZD once more after 20 minutes.
+which will trigger the EPLF-republish container to republish the payment data to the ZD once more after a certain amount of time.
 
 After processing a message, the successfully inserted rows will be published to the 'validation' queue.
 If there were any rows with invalid IBANs, they will also be published to the 'validation' queue separately.
