@@ -1,7 +1,7 @@
 """
 This script will fill the 'Payments' table of the EPLF database with 30,000 rows of randomly generated payment data.
 
-It has a 0.2% chance of generating an entry with an invalid IBAN.
+Each row has a 0.2% chance of containing an entry with an invalid IBAN.
 """
 
 import random

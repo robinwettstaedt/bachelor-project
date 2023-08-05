@@ -3,7 +3,8 @@ This script is run inside the EPLF-listen container.
 
 It listens for messages on the 'validation' queue and iterates through the data it receives through said queue.
 
-For each record in the message, it updates the corresponding entry in the 'Log' table to have the 'validated' field set to True.
+For each record in the message, it updates the corresponding entry in the 'Log' table to have the 'validated' field set to True
+and the `faulty` field set to True if the IBAN is invalid.
 """
 
 

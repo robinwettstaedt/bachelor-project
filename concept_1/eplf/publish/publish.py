@@ -4,10 +4,7 @@ This script is run inside the EPLF-publish container.
 This script retrieves a random number of rows (between 1000 and 10000) from the 'Payments' table of the EPLF database
 that have not already been retrieved previously (and are therefore not present in the 'Log' table).
 
-It then checks if the IBAN is valid and writes the data to the 'Log' table in the database.
-If the IBAN is invalid, it sets the 'faulty' column to True.
-
-It also publishes the data to the RabbitMQ 'data' queue.
+The retrieved rows are then added to the 'Log' table in the database, converted to a JSON string and published to the RabbitMQ 'data' queue.
 
 It runs in a loop with a 10 minute delay between each iteration.
 """

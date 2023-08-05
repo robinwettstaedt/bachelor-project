@@ -10,6 +10,7 @@ This will result in the payment not being sent back to the EPLF-listen container
 which will trigger the EPLF-republish container to republish the payment data to the ZD once more after 20 minutes.
 
 After processing a message, the successfully inserted rows will be published to the 'validation' queue.
+If there were any rows with invalid IBANs, they will also be published to the 'validation' queue separately.
 """
 
 

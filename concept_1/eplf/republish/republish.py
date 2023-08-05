@@ -2,12 +2,12 @@
 This script is run inside the EPLF-republish container.
 
 It retrieves all the unvalidated rows from the 'Log' table of the EPLF database,
-filters out the rows that have been inserted less than 20 minutes ago,
+filters out the rows that have been inserted less than 2 minutes ago,
 as well as the ones that are faulty (previously found to have invalid IBANs).
 
 It then publishes the filtered data to the RabbitMQ 'data' queue to be consumed by the ZD once more.
 
-It runs in a loop with a 10 minute delay between each iteration.
+It runs in a loop with a 1 minute delay between each iteration.
 """
 
 
@@ -52,7 +52,7 @@ def get_data_from_log(conn):
 
 
 def filter_log_data(data) -> list:
-    # This function filters out the rows that have been inserted less than 20 minutes ago
+    # This function filters out the rows that have been inserted less than 2 minutes ago
     filtered_data = []
 
     for row in data:
